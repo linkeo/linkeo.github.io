@@ -2,22 +2,23 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
-<title>分类: hello - Linkeo&#39;s Blog</title>
+<title>JavaScript的new操作符 - Linkeo&#39;s Blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-    <meta name="description" content="A &quot;GitHub Page&quot; blog powered by Hexo">
-<meta name="keywords" content="Developer, Javascript, Server, Web">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Linkeo&#39;s Blog">
-<meta property="og:url" content="https://blog.linkeo.me/categories/hexo/hello/index.html">
+    <meta name="description" content="导读：JavaScript 的 new 操作符都做了些什么？如何用一个函数来模拟 new ？">
+<meta name="keywords" content="JavaScript,OOJS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript的new操作符">
+<meta property="og:url" content="https://blog.linkeo.me/2019/05/22/js-new-operator/index.html">
 <meta property="og:site_name" content="Linkeo&#39;s Blog">
-<meta property="og:description" content="A &quot;GitHub Page&quot; blog powered by Hexo">
+<meta property="og:description" content="导读：JavaScript 的 new 操作符都做了些什么？如何用一个函数来模拟 new ？">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-22T10:34:49.410Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linkeo&#39;s Blog">
-<meta name="twitter:description" content="A &quot;GitHub Page&quot; blog powered by Hexo">
+<meta name="twitter:title" content="JavaScript的new操作符">
+<meta name="twitter:description" content="导读：JavaScript 的 new 操作符都做了些什么？如何用一个函数来模拟 new ？">
 
 
 
@@ -89,7 +90,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.svg" alt="Linkeo&#39;s Blog" height="28">
+                <img src="/images/logo.svg" alt="JavaScript的new操作符" height="28">
             
             </a>
         </div>
@@ -121,6 +122,10 @@
                     
                 
                 
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
                 
                 <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
@@ -135,36 +140,22 @@
         <div class="container">
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
-    <div class="card-content">
-        <nav class="breadcrumb" aria-label="breadcrumbs">
-        <ul>
-            <li><a href="/categories">分类</a></li>
-            
-            <li><a href="/categories/hexo/">hexo</a></li>
-            
-            <li class="is-active"><a href="#" aria-current="page">hello</a></li>
-        </ul>
-        </nav>
-    </div>
-</div>
-
-    <div class="card">
     
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-05-22T03:28:13.858Z">2019-05-22</time>
+                <time class="level-item has-text-grey" datetime="2019-05-22T09:20:32.000Z">2019-05-22</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/hexo/">hexo</a>&nbsp;/&nbsp;<a class="has-link-grey -link" href="/categories/hexo/hello/">hello</a>
+                <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    1 分钟 读完 (大约 121 个字)
+                    7 分钟 读完 (大约 1087 个字)
                 </span>
                 
                 
@@ -173,32 +164,74 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2019/05/22/hello-world/">Hello World</a>
+                JavaScript的new操作符
             
         </h1>
         <div class="content">
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new <span class="hljs-string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+            <p>导读：JavaScript 的 <code>new</code> 操作符都做了些什么？如何用一个函数来模拟 <code>new</code> ？</p>
+<a id="more"></a>
 
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+<h2 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a>官方文档</h2><p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new" target="_blank" rel="noopener">官方文档</a>第一段中的说法：</p>
+<blockquote>
+<p><code>new</code> 运算符创建一个用户定义的对象类型的实例或具有构造函数的内置对象的实例。<code>new</code> 关键字会进行如下的操作：</p>
+<ol>
+<li>创建一个空的简单 JavaScript 对象（即 <code>{}</code>）；</li>
+<li>链接该对象（即设置该对象的构造函数）到另一个对象 ；</li>
+<li>将步骤 1 新创建的对象作为 <code>this</code> 的上下文 ；</li>
+<li>如果该函数没有返回对象，则返回 <code>this</code> 。</li>
+</ol>
+</blockquote>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new" target="_blank" rel="noopener">官方文档</a>在 “描述” 章节中的说法：</p>
+<blockquote>
+<p>当代码 <code>new Foo(...)</code> 执行时，会发生以下事情：</p>
+<p>一个继承自 <code>Foo.prototype</code> 的新对象被创建。</p>
+<p>使用指定的参数调用构造函数 <code>Foo</code>，并将 <code>this</code> 绑定到新创建的对象。<code>new Foo</code> 等同于 <code>new Foo()</code>，也就是没有指定参数列表，<code>Foo</code> 不带任何参数调用的情况。</p>
+<p>由构造函数返回的对象就是 <code>new</code> 表达式的结果。如果构造函数没有显式返回一个对象，则使用步骤 1 创建的对象。（一般情况下，构造函数不返回值，但是用户可以选择主动返回对象，来覆盖正常的对象创建步骤）</p>
+</blockquote>
+<h3 id="要点"><a href="#要点" class="headerlink" title="要点"></a>要点</h3><p>根据上面两段描述，可以整理出以下要点：</p>
+<ol>
+<li>使用 <code>new</code> 来调用时，构造函数的上下文的 <code>this</code> 是一个新创建的对象，继承自构造函数的原型（<code>prototype</code>）</li>
+<li>当构造函数的返回值是一个对象的时候，返回这个对象，否则返回用作 <code>this</code> 的那个对象</li>
+</ol>
+<p>根据这两个要点，可以用函数来表示 <code>new</code> 操作符的逻辑。</p>
+<h2 id="函数表示"><a href="#函数表示" class="headerlink" title="函数表示"></a>函数表示</h2><figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">newOperator</span>(<span class="hljs-params">Constructor, args</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> thisValue = <span class="hljs-built_in">Object</span>.create(Constructor.prototype);</span><br><span class="line">  <span class="hljs-keyword">const</span> returnValue = Constructor.apply(thisValue, args);</span><br><span class="line">  <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> returnValue === <span class="hljs-string">'object'</span> &amp;&amp; returnValue !== <span class="hljs-literal">null</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> returnValue;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> thisValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo generate</span><br></pre></td></tr></table></figure>
+<h2 id="相关要点"><a href="#相关要点" class="headerlink" title="相关要点"></a>相关要点</h2><h3 id="创建一个继承自特定对象的新对象"><a href="#创建一个继承自特定对象的新对象" class="headerlink" title="创建一个继承自特定对象的新对象"></a>创建一个继承自特定对象的新对象</h3><p>最简单粗暴的方式是，创建一个对象，并且将原型指向继承的那个对象：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> newObject = &#123;&#125;;</span><br><span class="line">newObject.__proto__ = parentObject;</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo deploy</span><br></pre></td></tr></table></figure>
+<p>不过 JavaScript 不推荐直接使用 <code>__proto__</code>（下面会说），并且为我们提供了这样一个函数：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-built_in">Object</span>.create(proto, [propertiesObject]);</span><br></pre></td></tr></table></figure>
 
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+<blockquote>
+<p>参数：</p>
+<ul>
+<li><code>proto</code> - 作为新创建对象的原型的对象</li>
+<li><code>propertiesObject</code> - 可选参数。如果提供，将作为 <code>Object.defineProperties()</code> 的参数来使用</li>
+</ul>
+</blockquote>
+<h3 id="不推荐直接使用-proto"><a href="#不推荐直接使用-proto" class="headerlink" title="不推荐直接使用 __proto__"></a>不推荐直接使用 <code>__proto__</code></h3><p>来自<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/proto" target="_blank" rel="noopener">官方文档</a>的警告：</p>
+<blockquote>
+<p><strong>警告：</strong>通过现代浏览器的操作属性的便利性，可以改变一个对象的 <code>[[Prototype]]</code> 属性, 这种行为在每一个 JavaScript 引擎和浏览器中都是一个非常慢且影响性能的操作，使用这种方式来改变和继承属性是对性能影响非常严重的，并且性能消耗的时间也不是简单的花费在 <code>obj.__proto__ = ...</code> 语句上, 它还会影响到所有继承来自该 <code>[[Prototype]]</code> 的对象，如果你关心性能，你就不应该在一个对象中修改它的 <code>[[Prototype]]</code>。相反, 创建一个新的且可以继承 <code>[[Prototype]]</code> 的对象，推荐使用 <code>Object.create()</code>。</p>
+<p><strong>警告：</strong>当<code>Object.prototype.__proto__</code> 已被大多数浏览器厂商所支持的今天，其存在和确切行为仅在 ECMAScript 2015 规范中被标准化为传统功能，以确保 Web 浏览器的兼容性。为了更好的支持，建议只使用 <code>Object.getPrototypeOf()</code>。</p>
+</blockquote>
+<p><code>Object.prototype</code> 的 <code>__proto__</code> 属性是一个访问器属性（一个 getter 函数和一个 setter 函数）, 暴露了通过它访问的对象的内部<code>[[Prototype]]</code> (一个对象或 <code>null</code>)。</p>
+<p>简单来说，官方不推荐直接修改或者访问 <code>__proto__</code> 属性，修改会有性能问题，如果要创建包含继承关系的对象，推荐用 <code>Object.create()</code>，如果要访问原型，建议只使用 <code>Object.getPrototypeOf()</code>。</p>
 
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/JavaScript/">JavaScript</a>, <a class="has-link-grey -link" href="/tags/OOJS/">OOJS</a>
+                </div>
+            </div>
         </div>
         
         
         
     </div>
 </div>
-
-
 
 
 
@@ -260,7 +293,7 @@
                         分类
                     </p>
                     <p class="title has-text-weight-normal">
-                        2
+                        1
                     </p>
                 </div>
             </div>
@@ -295,6 +328,41 @@
 </div>
     
         
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#官方文档">
+        <span class="has-mr-6">1</span>
+        <span>官方文档</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#要点">
+        <span class="has-mr-6">1.1</span>
+        <span>要点</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#函数表示">
+        <span class="has-mr-6">2</span>
+        <span>函数表示</span>
+        </a></li><li>
+        <a class="is-flex" href="#相关要点">
+        <span class="has-mr-6">3</span>
+        <span>相关要点</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#创建一个继承自特定对象的新对象">
+        <span class="has-mr-6">3.1</span>
+        <span>创建一个继承自特定对象的新对象</span>
+        </a></li><li>
+        <a class="is-flex" href="#不推荐直接使用-proto">
+        <span class="has-mr-6">3.2</span>
+        <span>不推荐直接使用 __proto__</span>
+        </a></li></ul></li></ul>
+        </div>
+    </div>
+</div>
+
     
         
 
@@ -330,7 +398,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/hello/" style="font-size: 10px;">hello</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a>
+        <a href="/tags/JavaScript/" style="font-size: 10px;">JavaScript</a> <a href="/tags/OOJS/" style="font-size: 10px;">OOJS</a>
     </div>
 </div>
 
@@ -347,18 +415,18 @@
         
         <article class="media">
             
-            <a href="/2019/05/22/hello-world/" class="media-left">
+            <a href="/2019/05/22/js-new-operator/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Hello World">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript的new操作符">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-22T03:28:13.858Z">2019-05-22</time></div>
-                    <a href="/2019/05/22/hello-world/" class="has-link-black-ter is-size-6">Hello World</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-22T09:20:32.000Z">2019-05-22</time></div>
+                    <a href="/2019/05/22/js-new-operator/" class="has-link-black-ter is-size-6">JavaScript的new操作符</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/hexo/">hexo</a> / <a class="has-link-grey -link" href="/categories/hexo/hello/">hello</a>
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
                     </p>
                 </div>
             </div>
@@ -377,22 +445,14 @@
             </h3>
             <ul class="menu-list">
             <li>
-        <a class="level is-marginless" href="/categories/hexo/">
+        <a class="level is-marginless" href="/categories/JavaScript/">
             <span class="level-start">
-                <span class="level-item">hexo</span>
+                <span class="level-item">JavaScript</span>
             </span>
             <span class="level-end">
                 <span class="level-item tag">1</span>
             </span>
-        </a><ul><li>
-        <a class="level is-marginless" href="/categories/hexo/hello/">
-            <span class="level-start">
-                <span class="level-item">hello</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li></ul></li>
+        </a></li>
             </ul>
         </div>
     </div>
@@ -431,15 +491,15 @@
             <div class="field is-grouped is-grouped-multiline">
                 
                 <div class="control">
-                    <a class="tags has-addons" href="/tags/hello/">
-                        <span class="tag">hello</span>
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
-                    <a class="tags has-addons" href="/tags/hexo/">
-                        <span class="tag">hexo</span>
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -469,18 +529,18 @@
         
         <article class="media">
             
-            <a href="/2019/05/22/hello-world/" class="media-left">
+            <a href="/2019/05/22/js-new-operator/" class="media-left">
                 <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="Hello World">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript的new操作符">
                 </p>
             </a>
             
             <div class="media-content">
                 <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-22T03:28:13.858Z">2019-05-22</time></div>
-                    <a href="/2019/05/22/hello-world/" class="has-link-black-ter is-size-6">Hello World</a>
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-22T09:20:32.000Z">2019-05-22</time></div>
+                    <a href="/2019/05/22/js-new-operator/" class="has-link-black-ter is-size-6">JavaScript的new操作符</a>
                     <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/hexo/">hexo</a> / <a class="has-link-grey -link" href="/categories/hexo/hello/">hello</a>
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
                     </p>
                 </div>
             </div>
@@ -499,22 +559,14 @@
             </h3>
             <ul class="menu-list">
             <li>
-        <a class="level is-marginless" href="/categories/hexo/">
+        <a class="level is-marginless" href="/categories/JavaScript/">
             <span class="level-start">
-                <span class="level-item">hexo</span>
+                <span class="level-item">JavaScript</span>
             </span>
             <span class="level-end">
                 <span class="level-item tag">1</span>
             </span>
-        </a><ul><li>
-        <a class="level is-marginless" href="/categories/hexo/hello/">
-            <span class="level-start">
-                <span class="level-item">hello</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">1</span>
-            </span>
-        </a></li></ul></li>
+        </a></li>
             </ul>
         </div>
     </div>
@@ -553,15 +605,15 @@
             <div class="field is-grouped is-grouped-multiline">
                 
                 <div class="control">
-                    <a class="tags has-addons" href="/tags/hello/">
-                        <span class="tag">hello</span>
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
                 
                 <div class="control">
-                    <a class="tags has-addons" href="/tags/hexo/">
-                        <span class="tag">hexo</span>
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
                         <span class="tag is-grey">1</span>
                     </a>
                 </div>
@@ -583,7 +635,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.svg" alt="Linkeo&#39;s Blog" height="28">
+                    <img src="/images/logo.svg" alt="JavaScript的new操作符" height="28">
                 
                 </a>
                 <p class="is-size-7">
