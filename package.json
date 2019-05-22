@@ -5,7 +5,8 @@
   "scripts": {
     "build": "hexo generate",
     "clean": "hexo clean",
-    "deploy": "hexo deploy"
+    "deploy": "hexo deploy",
+    "test": "hexo deploy"
   },
   "hexo": {
     "version": "3.8.0"
