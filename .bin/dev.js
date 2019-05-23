@@ -2,7 +2,7 @@ const execa = require('execa');
 
 process.env.COLOR = 'true';
 
-const server = execa('hexo', ['server']);
+const server = execa('hexo', ['server', '-p', '5000']);
 const builder = execa('hexo', ['generate', '--watch']);
 builder.stdout.pipe(process.stdout);
 
