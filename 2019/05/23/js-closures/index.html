@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="星空博客">
 <meta property="og:description" content="什么是闭包？哪里用得到闭包？ 闭包是函数和声明该函数的词法环境的组合。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-23T03:58:15.507Z">
+<meta property="og:updated_time" content="2019-05-23T10:22:33.509Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="JavaScript 中的闭包（Closures）">
 <meta name="twitter:description" content="什么是闭包？哪里用得到闭包？ 闭包是函数和声明该函数的词法环境的组合。">
@@ -153,7 +153,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    12 分钟 读完 (大约 1824 个字)
+                    14 分钟 读完 (大约 2061 个字)
                 </span>
                 
                 
@@ -178,6 +178,10 @@
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> name = <span class="hljs-string">'Mozilla'</span>; <span class="hljs-comment">// name 是 init 函数的局部变量</span></span><br><span class="line">  <span class="hljs-comment">// displayName() 是一个内部函数，是一个闭包</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">displayName</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(name); <span class="hljs-comment">// 使用了外部函数中的变量</span></span><br><span class="line">  &#125;</span><br><span class="line">  displayName();</span><br><span class="line">&#125;</span><br><span class="line">init();</span><br></pre></td></tr></table></figure>
 
 <p>这个例子说明词法作用域的范围，函数的词法作用域包括了函数自身的作用域以及定义该函数的位置的作用域。<br>也就是说，函数可以访问在其上层作用域中定义的变量。</p>
+<blockquote>
+<h4 id="作用域对象"><a href="#作用域对象" class="headerlink" title="作用域对象"></a>作用域对象</h4><p>每当 JavaScript 执行一个函数时，都会创建一个作用域对象（scope object），用来保存在这个函数中创建的局部变量。它和被传入函数的变量一起被初始化。这与那些保存的所有全局变量和函数的全局对象（global object）类似，但仍有一些很重要的区别，第一，每次函数被执行的时候，就会创建一个新的，特定的作用域对象；第二，与全局对象（在浏览器里面是当做 <code>window</code> 对象来访问的）不同的是，你不能从 JavaScript 代码中直接访问作用域对象，也没有可以遍历当前的作用域对象里面属性的方法。</p>
+<p>一个闭包就是一个函数和其外层函数的作用域对象的组合。</p>
+</blockquote>
 <h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>再看一下这个例子：</p>
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeFunc</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> name = <span class="hljs-string">'Mozilla'</span>;</span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">displayName</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(name);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> displayName;</span><br><span class="line">&#125;</span><br><span class="line"><span class="hljs-keyword">var</span> myFunc = makeFunc();</span><br><span class="line">myFunc();</span><br></pre></td></tr></table></figure>
 
@@ -375,7 +379,11 @@
         <a class="is-flex" href="#词法作用域">
         <span class="has-mr-6">1.1</span>
         <span>词法作用域</span>
-        </a></li><li>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#作用域对象">
+        <span class="has-mr-6">1.1.1</span>
+        <span>作用域对象</span>
+        </a></li></ul></li><li>
         <a class="is-flex" href="#闭包">
         <span class="has-mr-6">1.2</span>
         <span>闭包</span>
@@ -467,12 +475,6 @@
         
         <article class="media">
             
-            <a href="/2019/05/23/js-equality-and-sameness/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 中的相等性判断">
-                </p>
-            </a>
-            
             <div class="media-content">
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-23T07:07:58.000Z">2019-05-23</time></div>
@@ -486,12 +488,6 @@
         
         <article class="media">
             
-            <a href="/2019/05/23/js-closures/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 中的闭包（Closures）">
-                </p>
-            </a>
-            
             <div class="media-content">
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-23T02:19:58.000Z">2019-05-23</time></div>
@@ -504,12 +500,6 @@
         </article>
         
         <article class="media">
-            
-            <a href="/2019/05/22/js-new-operator/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 的 new 操作符">
-                </p>
-            </a>
             
             <div class="media-content">
                 <div class="content">
@@ -619,12 +609,6 @@
         
         <article class="media">
             
-            <a href="/2019/05/23/js-equality-and-sameness/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 中的相等性判断">
-                </p>
-            </a>
-            
             <div class="media-content">
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-23T07:07:58.000Z">2019-05-23</time></div>
@@ -638,12 +622,6 @@
         
         <article class="media">
             
-            <a href="/2019/05/23/js-closures/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 中的闭包（Closures）">
-                </p>
-            </a>
-            
             <div class="media-content">
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-23T02:19:58.000Z">2019-05-23</time></div>
@@ -656,12 +634,6 @@
         </article>
         
         <article class="media">
-            
-            <a href="/2019/05/22/js-new-operator/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 的 new 操作符">
-                </p>
-            </a>
             
             <div class="media-content">
                 <div class="content">
