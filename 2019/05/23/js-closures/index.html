@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+<title>JavaScript 中的闭包（Closures） - Linkeo&#39;s Blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="什么是闭包？哪里用得到闭包？ 闭包是函数和声明该函数的词法环境的组合。">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 中的闭包（Closures）">
+<meta property="og:url" content="https://blog.linkeo.me/2019/05/23/js-closures/index.html">
+<meta property="og:site_name" content="Linkeo&#39;s Blog">
+<meta property="og:description" content="什么是闭包？哪里用得到闭包？ 闭包是函数和声明该函数的词法环境的组合。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-05-23T03:58:15.507Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 中的闭包（Closures）">
+<meta name="twitter:description" content="什么是闭包？哪里用得到闭包？ 闭包是函数和声明该函数的词法环境的组合。">
+
+
+
+
+
+<link rel="icon" href="/images/favicon.svg">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+<link rel="stylesheet" href="https://fonts.loli.net/css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.svg" alt="JavaScript 中的闭包（Closures）" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Home</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+                <a class="navbar-item" href="/about">About</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Repository" href="https://github.com/linkeo/linkeo.github.io">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-05-23T02:19:58.000Z">2019-05-23</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    12 分钟 读完 (大约 1824 个字)
+                </span>
+                
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                JavaScript 中的闭包（Closures）
+            
+        </h1>
+        <div class="content">
+            <p>什么是闭包？哪里用得到闭包？</p>
+<p>闭包是函数和声明该函数的词法环境的组合。</p>
+<a id="more"></a>
+
+<h2 id="什么是闭包？"><a href="#什么是闭包？" class="headerlink" title="什么是闭包？"></a>什么是闭包？</h2><blockquote>
+<p>闭包是函数和声明该函数的词法环境的组合。</p>
+<p>—- <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures" target="_blank" rel="noopener">JavaScript Reference</a></p>
+</blockquote>
+<h3 id="词法作用域"><a href="#词法作用域" class="headerlink" title="词法作用域"></a>词法作用域</h3><p>考虑如下情况：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> name = <span class="hljs-string">'Mozilla'</span>; <span class="hljs-comment">// name 是 init 函数的局部变量</span></span><br><span class="line">  <span class="hljs-comment">// displayName() 是一个内部函数，是一个闭包</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">displayName</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(name); <span class="hljs-comment">// 使用了外部函数中的变量</span></span><br><span class="line">  &#125;</span><br><span class="line">  displayName();</span><br><span class="line">&#125;</span><br><span class="line">init();</span><br></pre></td></tr></table></figure>
+
+<p>这个例子说明词法作用域的范围，函数的词法作用域包括了函数自身的作用域以及定义该函数的位置的作用域。<br>也就是说，函数可以访问在其上层作用域中定义的变量。</p>
+<h3 id="闭包"><a href="#闭包" class="headerlink" title="闭包"></a>闭包</h3><p>再看一下这个例子：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeFunc</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> name = <span class="hljs-string">'Mozilla'</span>;</span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">displayName</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(name);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> displayName;</span><br><span class="line">&#125;</span><br><span class="line"><span class="hljs-keyword">var</span> myFunc = makeFunc();</span><br><span class="line">myFunc();</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，内部函数并没有直接执行，而是被外部函数返回。这个例子在 JavaScript 中是可行的。但是在一些其它的编程语言中，函数中的局部变量仅函数的其执行期可用，一旦函数执行完毕，函数中的局部变量将被销毁。但其实变量销毁的逻辑其实是一样的，都为了节省内存，在变量不可再被访问时，进行销毁。（比如这些语言的局部变量一定是在函数执行完毕就无法再被访问了，又比如一些语言的引用计数方式的 GC）</p>
+<p>由于 JavaScript 中的函数会形成闭包，闭包可以访问其外层作用域，所以只要这些函数还能被访问到，外层作用域的变量就不会被销毁。由于我们还持有 <code>myFunc</code>（等同于 <code>displayName</code>，一个可以访问 <code>name</code> 变量的闭包），所以 <code>name</code> 变量不会被销毁。</p>
+<p>下面是一个更有意思的例子：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeAdder</span>(<span class="hljs-params">x</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">y</span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> x + y;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">var</span> add5 = makeAdder(<span class="hljs-number">5</span>);</span><br><span class="line"><span class="hljs-keyword">var</span> add10 = makeAdder(<span class="hljs-number">10</span>);</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(add5(<span class="hljs-number">2</span>)); <span class="hljs-comment">// 7</span></span><br><span class="line"><span class="hljs-built_in">console</span>.log(add10(<span class="hljs-number">2</span>)); <span class="hljs-comment">// 12</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，<code>add5</code> 和 <code>add10</code> 共享函数定义，但是各自有不同的词法环境。<code>add5</code> 的环境中，<code>x</code> 为 5，而 <code>add10</code> 中，<code>x</code> 为 10。</p>
+<h2 id="闭包的用处"><a href="#闭包的用处" class="headerlink" title="闭包的用处"></a>闭包的用处</h2><p>闭包是一个很有用的特性，因为他可以将函数和其定义的环境联系起来。这个面向对象编程中，对象允许将其方法和其属性与其它方法联系起来有些相像。</p>
+<h3 id="函数工厂"><a href="#函数工厂" class="headerlink" title="函数工厂"></a>函数工厂</h3><p>在上面那个例子中，我们可以看到闭包的一种用法：函数工厂。根据不同参数，创建行为具有相同规则但是又不相同的函数，例如创建可以修改字体大小的函数，并且绑定到不同事件上面去：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fontSizeSetter</span>(<span class="hljs-params">size</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-built_in">document</span>.body.style.fontSize = size + <span class="hljs-string">'px'</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'font-size-12'</span>).onClick = fontSizeSetter(<span class="hljs-number">12</span>);</span><br><span class="line"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'font-size-14'</span>).onClick = fontSizeSetter(<span class="hljs-number">14</span>);</span><br><span class="line"><span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'font-size-16'</span>).onClick = fontSizeSetter(<span class="hljs-number">16</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="模拟私有变量与方法"><a href="#模拟私有变量与方法" class="headerlink" title="模拟私有变量与方法"></a>模拟私有变量与方法</h3><p>JavaScript 不像 Java 等一些其它语言，JavaScript 无法定义私有的变量或方法（即只能被同一个类访问的变量或方法）。</p>
+<p>但是通过闭包，我们可以模拟相同的效果。例如：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">var</span> Counter = (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> privateCounter = <span class="hljs-number">0</span>;</span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">changeBy</span>(<span class="hljs-params">val</span>) </span>&#123;</span><br><span class="line">    privateCounter += val;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> &#123;</span><br><span class="line">    increment: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      changeBy(<span class="hljs-number">1</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      changeBy(<span class="hljs-number">-1</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    value: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> privateCounter;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="hljs-built_in">console</span>.log(Counter.value()); <span class="hljs-comment">// 0</span></span><br><span class="line">Counter.increment();</span><br><span class="line">Counter.increment();</span><br><span class="line"><span class="hljs-built_in">console</span>.log(Counter.value()); <span class="hljs-comment">// 2</span></span><br><span class="line">Counter.decrement();</span><br><span class="line"><span class="hljs-built_in">console</span>.log(Counter.value()); <span class="hljs-comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>这个例子中，<code>Counter</code> 对象有三个方法：<code>increment</code>、<code>decrement</code> 和 <code>value</code>，并且除了这三个方法，没有地方再可以访问 <code>privateCounter</code> 与 <code>changeBy</code>。</p>
+<p>像这种通过闭包来定义公共函数，并使其可以访问私有变量和函数的方式，通常被称为<em>模块模式（Module Pattern）</em>。</p>
+<p>再举一个更加面向对象一些的例子：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Counter</span>(<span class="hljs-params">initValue</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> privateCounter = initValue || <span class="hljs-number">0</span>;</span><br><span class="line">  <span class="hljs-keyword">return</span> &#123;</span><br><span class="line">    increment() &#123;</span><br><span class="line">      privateCounter += <span class="hljs-number">1</span>;</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">    decrement() &#123;</span><br><span class="line">      privateCounter -= <span class="hljs-number">1</span>;</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="hljs-keyword">get</span> value() &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> privateCounter;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> counter1 = <span class="hljs-keyword">new</span> Counter();</span><br><span class="line">counter1.increment().increment().value; <span class="hljs-comment">// 2</span></span><br><span class="line">counter1.decrement().value; <span class="hljs-comment">// 1</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> counter2 = <span class="hljs-keyword">new</span> Counter(counter1.value);</span><br><span class="line">counter2.increment().value; <span class="hljs-comment">// 2</span></span><br><span class="line">counter2.increment().decrement().value; <span class="hljs-comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<p>运用 <code>class</code> 语法的版本：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Counter</span> </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">constructor</span>(initValue = 0) &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> privateCounter = initValue;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">makeChainableChanger</span>(<span class="hljs-params">value</span>) </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">        privateCounter += value;</span><br><span class="line">        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> &#123;</span><br><span class="line">      increment: makeChainableChanger(<span class="hljs-number">1</span>),</span><br><span class="line">      decrement: makeChainableChanger(<span class="hljs-number">-1</span>),</span><br><span class="line">      <span class="hljs-keyword">get</span> value() &#123;</span><br><span class="line">        <span class="hljs-keyword">return</span> privateCounter;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="闭包的常见错误"><a href="#闭包的常见错误" class="headerlink" title="闭包的常见错误"></a>闭包的常见错误</h2><p>在 ECMAScript 2015 引入 <code>let</code> 关键字之前，在循环中有一个常见的闭包创建问题。</p>
+<p>示例如下：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showHelp</span>(<span class="hljs-params">help</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'help'</span>).innerHTML = help;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setupHelp</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> helpText = [</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'email'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your e-mail address'</span> &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'name'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your full name'</span> &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'age'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your age (you must be over 16)'</span> &#125;</span><br><span class="line">  ];</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; helpText.length; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">var</span> item = helpText[i];</span><br><span class="line">    <span class="hljs-built_in">document</span>.getElementById(item.id).onfocus = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      showHelp(item.help);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setupHelp();</span><br></pre></td></tr></table></figure>
+
+<p>这个例子中，每个循环创建了一个闭包，由于在循环中被创建，这 3 个闭包共享了相同的词法环境（循环的词法环境），在这些闭包被调用时，循环早已结束，词法环境中的 <code>item</code> 已经指向了 <code>helpText</code> 的最后一项。</p>
+<p>解决这个问题有很多种办法，比如可以通过引入更多闭包解决：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showHelp</span>(<span class="hljs-params">help</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'help'</span>).innerHTML = help;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showHelpCallback</span>(<span class="hljs-params">item</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    showHelp(item.help);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setupHelp</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> helpText = [</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'email'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your e-mail address'</span> &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'name'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your full name'</span> &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'age'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your age (you must be over 16)'</span> &#125;</span><br><span class="line">  ];</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; helpText.length; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">var</span> item = helpText[i];</span><br><span class="line">    <span class="hljs-built_in">document</span>.getElementById(item.id).onfocus = showHelpCallback(item);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setupHelp();</span><br></pre></td></tr></table></figure>
+
+<p>或者使用匿名闭包：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showHelp</span>(<span class="hljs-params">help</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'help'</span>).innerHTML = help;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setupHelp</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">var</span> helpText = [</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'email'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your e-mail address'</span> &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'name'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your full name'</span> &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'age'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your age (you must be over 16)'</span> &#125;</span><br><span class="line">  ];</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; helpText.length; i++) &#123;</span><br><span class="line">    (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      <span class="hljs-keyword">var</span> item = helpText[i];</span><br><span class="line">      <span class="hljs-built_in">document</span>.getElementById(item.id).onfocus = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">        showHelp(item.help);</span><br><span class="line">      &#125;;</span><br><span class="line">    &#125;)();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setupHelp();</span><br></pre></td></tr></table></figure>
+
+<p>而更好的方法是，使用 <code>let</code> 关键词将变量声明到块作用域（循环的块作用域是每一次循环独立的）而不是整个循环上。（所以在很多项目的规范中，要求永远不要使用 <code>var</code> 关键词）</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">showHelp</span>(<span class="hljs-params">help</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">'help'</span>).innerHTML = help;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setupHelp</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> helpText = [</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'email'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your e-mail address'</span> &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'name'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your full name'</span> &#125;,</span><br><span class="line">    &#123; <span class="hljs-attr">id</span>: <span class="hljs-string">'age'</span>, <span class="hljs-attr">help</span>: <span class="hljs-string">'Your age (you must be over 16)'</span> &#125;</span><br><span class="line">  ];</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; helpText.length; i++) &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> item = helpText[i];</span><br><span class="line">    <span class="hljs-built_in">document</span>.getElementById(item.id).onfocus = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">      showHelp(item.help);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">setupHelp();</span><br></pre></td></tr></table></figure>
+
+<h2 id="性能考量"><a href="#性能考量" class="headerlink" title="性能考量"></a>性能考量</h2><blockquote>
+<p>如果不是某些特定任务需要使用闭包，在其它函数中创建函数是不明智的，因为闭包在处理速度和内存消耗方面对脚本性能具有负面影响。</p>
+<p>例如，在创建新的对象或者类时，方法通常应该关联于对象的原型，而不是定义到对象的构造器中。原因是这将导致每次构造器被调用时，方法都会被重新赋值一次（也就是，每个对象的创建）。</p>
+<p>—- <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Closures#Performance_considerations" target="_blank" rel="noopener">JavaScript Reference</a></p>
+</blockquote>
+<p>考虑以下示例：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MyObject</span>(<span class="hljs-params">name, message</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">this</span>.name = name.toString();</span><br><span class="line">  <span class="hljs-keyword">this</span>.message = message.toString();</span><br><span class="line">  <span class="hljs-keyword">this</span>.getName = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.name;</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="hljs-keyword">this</span>.getMessage = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.message;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在上面的代码中，我们并没有利用到闭包的好处，因此可以避免使用闭包。修改成如下：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">MyObject</span>(<span class="hljs-params">name, message</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">this</span>.name = name.toString();</span><br><span class="line">  <span class="hljs-keyword">this</span>.message = message.toString();</span><br><span class="line">&#125;</span><br><span class="line">MyObject.prototype.getName = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.name;</span><br><span class="line">&#125;;</span><br><span class="line">MyObject.prototype.getMessage = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.message;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/JavaScript/">JavaScript</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/05/22/js-new-operator/">
+                <span class="level-item">JavaScript 的 new 操作符</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="image container is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://www.gravatar.com/avatar/968c826fa8b03009fa3d708f0bd041e9?s=128" alt="Linkeo">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        Linkeo
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Node.js Developer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Hangzhou, China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        2
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        1
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        2
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/linkeo">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/linkeo">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#什么是闭包？">
+        <span class="has-mr-6">1</span>
+        <span>什么是闭包？</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#词法作用域">
+        <span class="has-mr-6">1.1</span>
+        <span>词法作用域</span>
+        </a></li><li>
+        <a class="is-flex" href="#闭包">
+        <span class="has-mr-6">1.2</span>
+        <span>闭包</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#闭包的用处">
+        <span class="has-mr-6">2</span>
+        <span>闭包的用处</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#函数工厂">
+        <span class="has-mr-6">2.1</span>
+        <span>函数工厂</span>
+        </a></li><li>
+        <a class="is-flex" href="#模拟私有变量与方法">
+        <span class="has-mr-6">2.2</span>
+        <span>模拟私有变量与方法</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#闭包的常见错误">
+        <span class="has-mr-6">3</span>
+        <span>闭包的常见错误</span>
+        </a></li><li>
+        <a class="is-flex" href="#性能考量">
+        <span class="has-mr-6">4</span>
+        <span>性能考量</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://hexo.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hexo.io</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/OOJS/" style="font-size: 10px;">OOJS</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/05/23/js-closures/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 中的闭包（Closures）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-23T02:19:58.000Z">2019-05-23</time></div>
+                    <a href="/2019/05/23/js-closures/" class="has-link-black-ter is-size-6">JavaScript 中的闭包（Closures）</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/05/22/js-new-operator/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 的 new 操作符">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-22T09:20:32.000Z">2019-05-22</time></div>
+                    <a href="/2019/05/22/js-new-operator/" class="has-link-black-ter is-size-6">JavaScript 的 new 操作符</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <a href="/2019/05/23/js-closures/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 中的闭包（Closures）">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-23T02:19:58.000Z">2019-05-23</time></div>
+                    <a href="/2019/05/23/js-closures/" class="has-link-black-ter is-size-6">JavaScript 中的闭包（Closures）</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <a href="/2019/05/22/js-new-operator/" class="media-left">
+                <p class="image is-64x64">
+                    <img class="thumbnail" src="/images/thumbnail.svg" alt="JavaScript 的 new 操作符">
+                </p>
+            </a>
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-22T09:20:32.000Z">2019-05-22</time></div>
+                    <a href="/2019/05/22/js-new-operator/" class="has-link-black-ter is-size-6">JavaScript 的 new 操作符</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.svg" alt="JavaScript 中的闭包（Closures）" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Linkeo&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/">
+                        
+                        <i class="fab fa-creative-commons"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/">
+                        
+                        <i class="fab fa-creative-commons-by"></i>
+                        
+                    </a>
+                </p>
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
