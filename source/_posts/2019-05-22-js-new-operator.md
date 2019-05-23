@@ -1,0 +1,91 @@
+---
+title: JavaScript 的 new 操作符
+date: 2019-05-22 17:20:32
+category:
+  - JavaScript
+tags:
+  - JavaScript
+  - OOJS
+toc: true
+---
+
+JavaScript 的 `new` 操作符都做了些什么？如何用一个函数来模拟 `new` 呢？
+
+<!-- more -->
+
+## 官方文档
+
+[官方文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)第一段中的说法：
+
+> `new` 运算符创建一个用户定义的对象类型的实例或具有构造函数的内置对象的实例。`new` 关键字会进行如下的操作：
+>
+> 1. 创建一个空的简单 JavaScript 对象（即 `{}`）；
+> 2. 链接该对象（即设置该对象的构造函数）到另一个对象 ；
+> 3. 将步骤 1 新创建的对象作为 `this` 的上下文 ；
+> 4. 如果该函数没有返回对象，则返回 `this` 。
+
+[官方文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/new)在 “描述” 章节中的说法：
+
+> 当代码 `new Foo(...)` 执行时，会发生以下事情：
+>
+> 一个继承自 `Foo.prototype` 的新对象被创建。
+>
+> 使用指定的参数调用构造函数 `Foo`，并将 `this` 绑定到新创建的对象。`new Foo` 等同于 `new Foo()`，也就是没有指定参数列表，`Foo` 不带任何参数调用的情况。
+>
+> 由构造函数返回的对象就是 `new` 表达式的结果。如果构造函数没有显式返回一个对象，则使用步骤 1 创建的对象。（一般情况下，构造函数不返回值，但是用户可以选择主动返回对象，来覆盖正常的对象创建步骤）
+
+### 要点
+
+根据上面两段描述，可以整理出以下要点：
+
+1. 使用 `new` 来调用时，构造函数的上下文的 `this` 是一个新创建的对象，继承自构造函数的原型（`prototype`）
+2. 当构造函数的返回值是一个对象的时候，返回这个对象，否则返回用作 `this` 的那个对象
+
+根据这两个要点，可以用函数来表示 `new` 操作符的逻辑。
+
+## 函数表示
+
+```js
+function newOperator(Constructor, args) {
+  const thisValue = Object.create(Constructor.prototype);
+  const returnValue = Constructor.apply(thisValue, args);
+  if (typeof returnValue === 'object' && returnValue !== null) {
+    return returnValue;
+  }
+  return thisValue;
+}
+```
+
+## 相关要点
+
+### 创建一个继承自特定对象的新对象
+
+最简单粗暴的方式是，创建一个对象，并且将原型指向继承的那个对象：
+
+```js
+const newObject = {};
+newObject.__proto__ = parentObject;
+```
+
+不过 JavaScript 不推荐直接使用 `__proto__`（下面会说），并且为我们提供了这样一个函数：
+
+```js
+Object.create(proto, [propertiesObject]);
+```
+
+> 参数：
+>
+> - `proto` - 作为新创建对象的原型的对象
+> - `propertiesObject` - 可选参数。如果提供，将作为 `Object.defineProperties()` 的参数来使用
+
+### 不推荐直接使用 `__proto__`
+
+来自[官方文档](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/proto)的警告：
+
+> **警告：**通过现代浏览器的操作属性的便利性，可以改变一个对象的 `[[Prototype]]` 属性, 这种行为在每一个 JavaScript 引擎和浏览器中都是一个非常慢且影响性能的操作，使用这种方式来改变和继承属性是对性能影响非常严重的，并且性能消耗的时间也不是简单的花费在 `obj.__proto__ = ...` 语句上, 它还会影响到所有继承来自该 `[[Prototype]]` 的对象，如果你关心性能，你就不应该在一个对象中修改它的 `[[Prototype]]`。相反, 创建一个新的且可以继承 `[[Prototype]]` 的对象，推荐使用 `Object.create()`。
+>
+> **警告：**当`Object.prototype.__proto__` 已被大多数浏览器厂商所支持的今天，其存在和确切行为仅在 ECMAScript 2015 规范中被标准化为传统功能，以确保 Web 浏览器的兼容性。为了更好的支持，建议只使用 `Object.getPrototypeOf()`。
+
+`Object.prototype` 的 `__proto__` 属性是一个访问器属性（一个 getter 函数和一个 setter 函数）, 暴露了通过它访问的对象的内部`[[Prototype]]` (一个对象或 `null`)。
+
+简单来说，官方不推荐直接修改或者访问 `__proto__` 属性，修改会有性能问题，如果要创建包含继承关系的对象，推荐用 `Object.create()`，如果要访问原型，建议只使用 `Object.getPrototypeOf()`。

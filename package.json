@@ -3,10 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "start": "node .bin/dev",
     "build": "hexo generate",
     "clean": "hexo clean",
-    "deploy": "hexo deploy",
-    "test": "hexo deploy"
+    "deploy": "hexo clean && hexo generate && hexo deploy",
+    "watch": "hexo generate --watch",
+    "serve": "hexo server"
   },
   "hexo": {
     "version": "3.8.0"
@@ -24,6 +26,7 @@
     "hexo-server": "^0.3.3"
   },
   "devDependencies": {
+    "execa": "^1.0.0",
     "hexo-cli": "^1.1.0"
   }
 }
