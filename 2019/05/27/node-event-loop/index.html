@@ -17,7 +17,7 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://blog.linkeo.me/images/posts/node-event-loop.png">
 <meta property="og:image" content="https://blog.linkeo.me/images/posts/node-event-loop.png">
-<meta property="og:updated_time" content="2019-05-27T14:26:29.283Z">
+<meta property="og:updated_time" content="2019-05-28T03:15:20.258Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Node.js 中的事件循环">
 <meta name="twitter:description" content="Node.js 中有一些用于稍后执行的函数，比如 setTimeout(fn, ms)，setImmediate(fn) 以及 process.nextTick(fn)。如何区分它们，将与 Node.js 的事件循环机制息息相关。">
@@ -160,7 +160,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    20 分钟 读完 (大约 2995 个字)
+                    20 分钟 读完 (大约 3040 个字)
                 </span>
                 
                 
@@ -246,6 +246,7 @@
 <h3 id="检查阶段"><a href="#检查阶段" class="headerlink" title="检查阶段"></a>检查阶段</h3><p>这个阶段将执行被 <code>setImmediate</code> 设置的回调，直到队列为空或者达到系统限制。</p>
 <h3 id="关闭阶段"><a href="#关闭阶段" class="headerlink" title="关闭阶段"></a>关闭阶段</h3><p>这个阶段将执行处理关闭或者销毁的 <code>close</code> 回调。这个阶段完成后，将再次检查循环是否活着（还有任务要做）。如果没有，将退出事件循环，进入进程结束阶段；如果有，将再次进入计时器阶段。</p>
 <h2 id="nextTick-队列与微任务队列"><a href="#nextTick-队列与微任务队列" class="headerlink" title="nextTick 队列与微任务队列"></a>nextTick 队列与微任务队列</h2><p>这两个队列会在一个阶段结束时尽可能快的运行。不像其他阶段，它们两个没有系统设置的最大限制，node 运行它们直到两个队列是空的。但是，nextTick 队列会比微任务队列有更高的任务优先级。</p>
+<p>根据<a href="https://blog.csdn.net/i10630226/article/details/81369841" target="_blank" rel="noopener">另一篇文章</a>的解释，这两个队列会在每个阶段结束前按顺序执行，直到它们为空。</p>
 <h2 id="进程池（Thread-Pool）"><a href="#进程池（Thread-Pool）" class="headerlink" title="进程池（Thread Pool）"></a>进程池（Thread Pool）</h2><p>一个普遍的误解是 Node.js 有一个处理所有异步操作的进程池。</p>
 <p>实际上，进程池是 libuv 的一部分，但不属于事件循环机制的一部分。而且并不是每个任务都要被进程池处理。libuv 能够灵活运用操作系统的异步 API 来保持环境为事件驱动的。而操作系统的异步 API 无法处理的任务（比如：DNS 查询、文件读取等），将由进程池来处理。进程池默认有 4 个进程，可以通过环境变量 <code>uv_threadpool_size</code> 来设置它的进程数量（最多可设置 128 个）。</p>
 <h2 id="帮助理解的例子"><a href="#帮助理解的例子" class="headerlink" title="帮助理解的例子"></a>帮助理解的例子</h2><h3 id="基础理解"><a href="#基础理解" class="headerlink" title="基础理解"></a>基础理解</h3><p>下面代码的打印顺序如何？</p>
