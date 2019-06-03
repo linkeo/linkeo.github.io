@@ -7,7 +7,7 @@ function foo() {
   console.log('foo', i);
   setTimeout(() => {
     console.log('setTimeout', i);
-  }, 0);
+  }, 2);
   process.nextTick(foo);
 }
 setTimeout(foo, 2);
