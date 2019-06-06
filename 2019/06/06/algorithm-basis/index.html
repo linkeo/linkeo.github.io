@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+<title>算法基础思想 - 星空博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="本篇介绍一些算法的基础思想。 包括：迭代、数学归纳法、递归、分治。（还讲了一下位运算和排列组合）">
+<meta name="keywords" content="Algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法基础思想">
+<meta property="og:url" content="https://blog.linkeo.me/2019/06/06/algorithm-basis/index.html">
+<meta property="og:site_name" content="星空博客">
+<meta property="og:description" content="本篇介绍一些算法的基础思想。 包括：迭代、数学归纳法、递归、分治。（还讲了一下位运算和排列组合）">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-06T07:25:31.071Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="算法基础思想">
+<meta name="twitter:description" content="本篇介绍一些算法的基础思想。 包括：迭代、数学归纳法、递归、分治。（还讲了一下位运算和排列组合）">
+
+
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="/icons/all.css">
+<link rel="stylesheet" href="/fonts/css.css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="算法基础思想" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Posts</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Repository" href="https://github.com/linkeo/linkeo.github.io">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2019-06-06T01:48:48.000Z">2019-06-06</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    21 分钟 读完 (大约 3126 个字)
+                </span>
+                
+                
+                <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
+                    <i class="far fa-eye"></i>
+                    <span id="busuanzi_value_page_pv">0</span>次访问
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                算法基础思想
+            
+        </h1>
+        <div class="content">
+            <p>本篇介绍一些算法的基础思想。</p>
+<p>包括：迭代、数学归纳法、递归、分治。（还讲了一下位运算和排列组合）</p>
+<a id="more"></a>
+
+<h2 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h2><p>迭代法（Iterative Method），在计算数学中，迭代是通过从一个初始估计出发寻找一系列近似解来解决问题（一般是解方程或者方程组）的数学过程，为实现这一过程所使用的方法统称。</p>
+<p>而在计算机中，迭代是程序中对一组指令（或一定步骤）的重复。它既可以被用作通用的术语（与 “重复” 同义，此时迭代的定义包括了递归），也可以用来描述一种特定形式的具有可变状态的重复（就是一般我们所说的迭代，与递归相对的概念）。迭代很容易通过循环语句来实现。</p>
+<p>应用：</p>
+<ul>
+<li>通过不断逼近来求某个数值或其近视值。典型方法包括二分法和牛顿法。</li>
+<li>在一定范围内查找目标值。典型方法如二分查找。</li>
+<li>机器学习算法中的迭代。比如 K-均值算法、PageRank 的马尔可夫链、梯度下降法等。</li>
+</ul>
+<h3 id="案例-1-二分法求平方根近似值"><a href="#案例-1-二分法求平方根近似值" class="headerlink" title="案例 1 二分法求平方根近似值"></a><strong>案例 1</strong> 二分法求平方根近似值</h3><figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; n 待求平方根的数</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; e 相对误差要求</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; limit 迭代次数限制</span></span><br><span class="line"><span class="hljs-comment"> * @return &#123;number&#125;</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSquareRootOf</span>(<span class="hljs-params">n, e = <span class="hljs-number">0.00000001</span>, limit = <span class="hljs-number">100000</span></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-literal">NaN</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span> || n === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> n;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">let</span> min = n &gt; <span class="hljs-number">1</span> ? <span class="hljs-number">1</span> : n;</span><br><span class="line">  <span class="hljs-keyword">let</span> max = n &gt; <span class="hljs-number">1</span> ? n : <span class="hljs-number">1</span>;</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> times = <span class="hljs-number">0</span>; times &lt; limit; times += <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> middle = min + (max - min) / <span class="hljs-number">2</span>;</span><br><span class="line">    <span class="hljs-keyword">const</span> square = middle * middle;</span><br><span class="line">    <span class="hljs-keyword">const</span> diff = <span class="hljs-built_in">Math</span>.abs(square / n - <span class="hljs-number">1</span>);</span><br><span class="line">    <span class="hljs-keyword">if</span> (diff &lt; e) &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> middle;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (square &gt; n) &#123;</span><br><span class="line">      max = middle;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      min = middle;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> min + (max - min) / <span class="hljs-number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>技巧 1</strong> 使用 <code>min + (max - min) / 2</code> 而不是 <code>(min + max) / 2</code> 来防止计算溢出</p>
+<p><strong>技巧 2</strong> 计算相对误差来使迭代次数相对稳定（<code>Math.abs(square / n - 1)</code>）</p>
+</blockquote>
+<h3 id="案例-2-二分查找"><a href="#案例-2-二分查找" class="headerlink" title="案例 2 二分查找"></a><strong>案例 2</strong> 二分查找</h3><p>二分查找的条件为：数组的元素是可比较的，且数组是有序的（或者说，需要先排序的）。</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; value 待搜索的值</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; array 搜索的数组</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; isSorted 数组是否有序（是否需要排序）</span></span><br><span class="line"><span class="hljs-comment"> * @return &#123;boolean&#125;</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bisectionSearch</span>(<span class="hljs-params">value, array, isSorted = false</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (!isSorted) &#123;</span><br><span class="line">    array = array.sort(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a - b);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">let</span> left = <span class="hljs-number">0</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> right = array.length - <span class="hljs-number">1</span>;</span><br><span class="line">  <span class="hljs-keyword">while</span> (left &lt; right) &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> middle = <span class="hljs-built_in">Math</span>.floor(left + (right - left) / <span class="hljs-number">2</span>);</span><br><span class="line">    <span class="hljs-keyword">const</span> current = array[middle];</span><br><span class="line">    <span class="hljs-keyword">if</span> (current === value) &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (current &lt; value) &#123;</span><br><span class="line">      left = middle;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      right = middle;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="数学归纳法"><a href="#数学归纳法" class="headerlink" title="数学归纳法"></a>数学归纳法</h2><p>使用数学归纳法可以从理论上证明一些结论的成立而避免迭代计算。</p>
+<p>数学归纳法（Mathematical Induction、MI、ID）是一种数学证明方法，通常被用于证明某个给定命题在整个（或者局部）自然数范围内成立。除了自然数以外，广义上的数学归纳法也可以用于证明一般良基结构，例如：集合论中的树。这种广义的数学归纳法应用于数学逻辑和计算机科学领域，称作结构归纳法。</p>
+<p>使用数学归纳法证明通常需要以下两步：</p>
+<ol>
+<li>证明基本情况（$ n=1 $）时，结论成立；</li>
+<li>假设 $ n=k $ 时结论成立，证明 $ n=k+1 $ 时结论也成立（$ k $ 为任意大于 0 的自然数）。</li>
+</ol>
+<blockquote>
+<p>以上两步的条件不是绝对的，基本情况的条件，以及第二步的递推条件都是可以修改的。当然，修改后结论成立的范围也需要重新审视。</p>
+</blockquote>
+<h3 id="案例-3-棋盘麦粒"><a href="#案例-3-棋盘麦粒" class="headerlink" title="案例 3 棋盘麦粒"></a><strong>案例 3</strong> 棋盘麦粒</h3><p>古印度一位宰相将受到国王赏赐麦粒，国王问他要多少麦粒，他拿出一个 8x8 的棋盘，说在第一个格子里放 1 粒、第二个格子里放 2 粒、之后每一个格子都放前一个个格子的 2 倍数量的麦粒，他需要放完这个棋盘所有格子的麦粒。</p>
+<p>这一题（n 个格子的麦粒总数）最直接的方式就是通过迭代来解答：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">countWheats</span>(<span class="hljs-params">latticeCount</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> sum = <span class="hljs-number">0</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> current = <span class="hljs-number">1</span>;</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; latticeCount; i += <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    sum += current;</span><br><span class="line">    current *= <span class="hljs-number">2</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> sum;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过我们可以发现，n 个格子的麦粒总数为 $ 1 + 2 + 2^2 + 2^3 + … + 2^{n-1} = 2^n-1 $，我们可以用数学归纳法来证明这个结论。</p>
+<p>我们用 $ f(n) $ 来表示前 n 个格子的麦粒总数。</p>
+<ol>
+<li>$ n=1 $ 时，$ f(n) = 1 = 2^0 - 1 $，结论成立</li>
+<li>假设 $ f(n) = 2^n - 1 $，那么 $ f(n + 1) = f(n) + 2^n = 2^n + 2^n - 1 = 2^{n+1} - 1 $，结论成立</li>
+</ol>
+<p>通过以上步骤，我们成功证明了结论在 n 为正整数的情况下均成立。</p>
+<p>所以这个解答可以简化为：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">countWheats</span>(<span class="hljs-params">latticeCount</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-number">2</span> ** latticeCount - <span class="hljs-number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是这个案例，通过浮点数计算乘方可能会损失精度，如果需要精确的值，我们需要使用 <code>BigInt</code> 类型来表示数值，通过迭代得到精确值。</p>
+<h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><p>递归（Recursion）在数学和计算机科学中，是指由一种（或多种）简单的基本情况定义的一类对象或方法，并规定其他所有情况都能被还原为其基本情况。</p>
+<p>观察数学归纳法的证明过程，我们可以发现，只要在 $ f(n) $ 值已知的情况下可以求的 $ f(n+1) $ 的值，并且能够得到初始条件下的值，我们就可以求得任意大于初始条件的情况下的 $ f(n) $。</p>
+<p>例如案例 3，我们也可以通过递归来得到答案：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">countWheats</span>(<span class="hljs-params">n</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> countWheats(n - <span class="hljs-number">1</span>) + <span class="hljs-number">2</span> ** (n - <span class="hljs-number">1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>递归的条件在于，我们已知基本情况的结果，而对于复杂情况，我们能够一步步地简化，直到简化为基本情况。</p>
+<h3 id="案例-4-列出-N-局猜拳获胜的所有情况"><a href="#案例-4-列出-N-局猜拳获胜的所有情况" class="headerlink" title="案例 4 列出 N 局猜拳获胜的所有情况"></a><strong>案例 4</strong> 列出 N 局猜拳获胜的所有情况</h3><figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> ROCK = <span class="hljs-string">'石头'</span>;</span><br><span class="line"><span class="hljs-keyword">const</span> SCISSORS = <span class="hljs-string">'剪刀'</span>;</span><br><span class="line"><span class="hljs-keyword">const</span> PAPER = <span class="hljs-string">'布'</span>;</span><br><span class="line"><span class="hljs-keyword">const</span> shapes = [ROCK, SCISSORS, PAPER];</span><br><span class="line"><span class="hljs-keyword">const</span> compare = <span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (a === b) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (</span><br><span class="line">    (a === ROCK &amp;&amp; b === SCISSORS) ||</span><br><span class="line">    (a === SCISSORS &amp;&amp; b === PAPER) ||</span><br><span class="line">    (a === PAPER &amp;&amp; b === ROCK)</span><br><span class="line">  ) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; games 还有多少场比赛要比</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;[string, string][]&#125; stack 已经比过的比赛的出拳方式</span></span><br><span class="line"><span class="hljs-comment"> * @return &#123;number&#125; 获胜的情况数量</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">winCaces</span>(<span class="hljs-params">games = <span class="hljs-number">1</span>, stack = []</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-comment">// 还有比赛要比</span></span><br><span class="line">  <span class="hljs-keyword">if</span> (games &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> count = <span class="hljs-number">0</span>;</span><br><span class="line">    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> thisSide <span class="hljs-keyword">of</span> shapes) &#123;</span><br><span class="line">      <span class="hljs-keyword">for</span> (<span class="hljs-keyword">const</span> thatSide <span class="hljs-keyword">of</span> shapes) &#123;</span><br><span class="line">        count += winCaces(games - <span class="hljs-number">1</span>, [...stack, [thisSide, thatSide]]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> count;</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> totalScore = stack</span><br><span class="line">      .map(<span class="hljs-function">(<span class="hljs-params">[thisSide, thatSide]</span>) =&gt;</span> compare(thisSide, thatSide))</span><br><span class="line">      .reduce(<span class="hljs-function">(<span class="hljs-params">sum, score</span>) =&gt;</span> sum + score, <span class="hljs-number">0</span>);</span><br><span class="line">    <span class="hljs-keyword">if</span> (totalScore &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">      <span class="hljs-built_in">console</span>.log(stack.map(<span class="hljs-function"><span class="hljs-params">pair</span> =&gt;</span> pair.join(<span class="hljs-string">'vs'</span>)).join(<span class="hljs-string">', '</span>));</span><br><span class="line">      <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> count = winCaces(<span class="hljs-number">3</span>);</span><br><span class="line"><span class="hljs-built_in">console</span>.log(<span class="hljs-string">'如上，一共'</span> + count + <span class="hljs-string">'种获胜情况'</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="分治"><a href="#分治" class="headerlink" title="分治"></a>分治</h2><p>在上一节递归中，我们知道了一种基于数学归纳的将复杂问题逐步简单化的方式，但是还有一些复杂问题可能无法通过逐步归纳的方式来简单化，比如二分查找、归并排序等等。这一节我们介绍另一种将复杂问题简单化的思想 —- 分治。</p>
+<p>在计算机科学中，分治法是建基于多项分支递归的一种很重要的算法范式。字面上的解释是“分而治之”，就是把一个复杂的问题分成两个或更多的相同或相似的子问题，直到最后子问题可以简单的直接求解，原问题的解即子问题的解的合并。</p>
+<p>这个技巧是很多高效算法的基础，如排序算法（快速排序、归并排序）、傅立叶变换（快速傅立叶变换）。</p>
+<h3 id="案例-5-归并排序"><a href="#案例-5-归并排序" class="headerlink" title="案例 5 归并排序"></a><strong>案例 5</strong> 归并排序</h3><p>归并排序是一种典型的使用分治思想的算法。它的核心步骤 “归并” 就是将两个有序的数组合并成一个有序的数组。归并排序就是将原数组分解成若干个长度为 1 的小数组，最后再归并成一个大数组的方法。</p>
+<p>由于归并过程的复杂度为 $ O(n) $，分解的次数为 $ O(\log_2{n}) $，归并排序的时间复杂度为 $ O(n\log_2{n}) $。由于归并过程总是产生相同长度的数组，归并排序的空间复杂度为 $ O(n) $。</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mergeSort</span>(<span class="hljs-params">array</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (array.length &lt; <span class="hljs-number">2</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> array;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">const</span> middle = <span class="hljs-built_in">Math</span>.floor(array.length / <span class="hljs-number">2</span>);</span><br><span class="line">  <span class="hljs-keyword">const</span> left = mergeSort(array.slice(<span class="hljs-number">0</span>, middle));</span><br><span class="line">  <span class="hljs-keyword">const</span> right = mergeSort(array.slice(middle));</span><br><span class="line">  <span class="hljs-keyword">return</span> merge(left, right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">merge</span>(<span class="hljs-params">a, b</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> c = [];</span><br><span class="line">  <span class="hljs-keyword">let</span> ia = <span class="hljs-number">0</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> ib = <span class="hljs-number">0</span>;</span><br><span class="line">  <span class="hljs-keyword">while</span> (ia &lt; a.length &amp;&amp; ib &lt; b.length) &#123;</span><br><span class="line">    c.push(a[ia] &lt;= b[ib] ? a[ia++] : b[ib++]);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> c.concat(ia &lt; a.length ? a.slice(ia) : b.slice(ib));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">const</span> sorted = mergeSort([<span class="hljs-number">1</span>, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>]);</span><br><span class="line"><span class="hljs-built_in">console</span>.log(sorted);</span><br></pre></td></tr></table></figure>
+
+<h2 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h2><p>位运算包括：左移、右移、与、或、非、异或。</p>
+<p>异或有以下性质：<code>x ^ x = 0</code>、<code>0 ^ x = x</code>。</p>
+<p>位运算由于其性质，在解决一些问题时有奇效。</p>
+<h3 id="案例-6-使用位运算判断奇偶"><a href="#案例-6-使用位运算判断奇偶" class="headerlink" title="案例 6 使用位运算判断奇偶"></a><strong>案例 6</strong> 使用位运算判断奇偶</h3><p>再一些语言中，位运算比取余运算要快得多，可以使用位运算来判断奇偶，来节省执行时间。</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> isOdd = <span class="hljs-function"><span class="hljs-params">number</span> =&gt;</span> (number &amp; <span class="hljs-number">1</span>) === <span class="hljs-number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="案例-7-不使用额外空间来交换整型变量"><a href="#案例-7-不使用额外空间来交换整型变量" class="headerlink" title="案例 7 不使用额外空间来交换整型变量"></a><strong>案例 7</strong> 不使用额外空间来交换整型变量</h3><p>利用异或的特性，我们可以不使用额外的变量就可以交换两个变量的值。</p>
+<p>$$<br>\begin{align}<br>x &amp;= x_0, y = y_0 \\<br>x &amp;= x \oplus y = x_0 \oplus y_0 \\<br>y &amp;= x \oplus y = x_0 \oplus y_0 \oplus y_0 = x_0 \\<br>x &amp;= x \oplus y = x_0 \oplus y_0 \oplus x_0 = y_0 \\<br>\end{align}<br>$$</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">swap</span>(<span class="hljs-params">arr, i, j</span>) </span>&#123;</span><br><span class="line">  arr[i] = arr[i] ^ arr[j];</span><br><span class="line">  arr[j] = arr[i] ^ arr[j];</span><br><span class="line">  arr[i] = arr[i] ^ arr[j];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="位的集合操作"><a href="#位的集合操作" class="headerlink" title="位的集合操作"></a>位的集合操作</h3><p>位数组可以用来描述一组相互独立的布尔状态，通常可以用整型来表示。</p>
+<p>比如，带分类的碰撞检测。我们要让魔法飞弹不能与建筑物碰撞，只能与怪物碰撞。</p>
+<p>我们让每一个类型包括两个位数组属性，一个表示自身的分类，一个表示可以碰撞的分类。</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Collision</span> </span>&#123;</span><br><span class="line">  mask = <span class="hljs-number">0</span>;</span><br><span class="line">  hitMask = <span class="hljs-number">0</span>;</span><br><span class="line">  canHit(other) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> (<span class="hljs-keyword">this</span>.hitMask &amp; other.mask) !== <span class="hljs-number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="hljs-keyword">const</span> Bit = &#123;</span><br><span class="line">  Monster: <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">0</span>,</span><br><span class="line">  Building: <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">1</span>,</span><br><span class="line">  MagicBullet: <span class="hljs-number">1</span> &lt;&lt; <span class="hljs-number">2</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 怪物可以与其它怪物、建筑、魔法飞弹碰撞</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Monster</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Collision</span> </span>&#123;</span><br><span class="line">  mask = Bit.Monster;</span><br><span class="line">  hitMask = Bit.Monster &amp; Bit.Building &amp; Bit.MagicBullet;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 建筑可以与其它建筑、怪物碰撞</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Building</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Collision</span> </span>&#123;</span><br><span class="line">  mask = Bit.Building;</span><br><span class="line">  hitMask = Bit.Monster &amp; Bit.Building;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 魔法飞弹只能与怪物碰撞</span></span><br><span class="line"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MagicBullet</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Collision</span> </span>&#123;</span><br><span class="line">  mask = Bit.MagicBullet;</span><br><span class="line">  hitMask = Bit.Monster;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="排列与组合"><a href="#排列与组合" class="headerlink" title="排列与组合"></a>排列与组合</h2><p>排列与组合一般用于分析或者列出所有可能的情况，即穷举法。</p>
+<p>排列（permutation），数学的重要概念之一。从 n 个不同元素中每次取出 m（1≤m≤n）个不同元素，排成一列，称为从 n 个元素中取出 m 个元素的无重复排列或直线排列，简称排列。从 n 个不同元素中取出 m 个不同元素的所有不同排列的个数称为排列种数或称排列数，记为 $ P_n^m $（或 $ A_n^m $）。</p>
+<p>$$<br>P_n^m = n(n-1)(n-2)…(n-m+1) = \frac{n!}{(n-m)!}<br>$$</p>
+<p>特别的，将 n 个元素全部取出来排列的排列数成为全排列，记为 $ P_n $。</p>
+<p>$$<br>P_n = n!
+$$</p>
+<p>重复排列（permutation with repetiton）是一种特殊的排列，从 n 个元素中可重复地选取 m 个元素，按照一定的顺序排成一列，称作从 n 个元素中取 m 个元素的可重复排列。重复排列的排列数为 $ n^m $。</p>
+<p>组合（combination），数学的重要概念之一。从 n 个不同元素中每次取出 m 个不同元素（0≤m≤n），不管其顺序合成一组，称为从 n 个元素中不重复地选取 m 个元素的一个组合。所有这样的组合的总数称为组合数，记为 $ C_n^m $。</p>
+<p>$$<br>C_n^m = \frac{P_n^m}{P_m} = \frac{n!}{m!(n-m)!}<br>$$</p>
+<p>基本性质：</p>
+<p>$$<br>\begin{align}<br>&amp;C_n^m = C_n^{n-m} \\<br>&amp;C_{n+1}^m = C_n^m + C_n^{m-1} \\<br>&amp;\sum_{k=0}^{n}{C_n^k} = 2^n \\<br>\end{align}<br>$$</p>
+<p>重复组合（combination with repetiton）是一种特殊的组合。从 n 个不同元素中可重复地选取 m 个元素。不管其顺序合成一组，称为从 n 个元素中取 m 个元素的可重复组合。从 n 个不同元素中可重复地选出 m 个元素的不同组合种数记为 $ H_n^m $。</p>
+<p>$$<br>H_n^m = \frac{(n+m-1)!}{m!(n-1)!}<br>$$</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Algorithm/">Algorithm</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/05/30/node-custom-promise/">
+                <span class="level-item">自己实现一个 Promise 类</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="image container is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://www.gravatar.com/avatar/968c826fa8b03009fa3d708f0bd041e9?s=128" alt="Linkeo">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        Linkeo
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Node.js Developer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Hangzhou, China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        7
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        3
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        6
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/linkeo">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/linkeo">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#迭代">
+        <span class="has-mr-6">1</span>
+        <span>迭代</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#案例-1-二分法求平方根近似值">
+        <span class="has-mr-6">1.1</span>
+        <span>案例 1 二分法求平方根近似值</span>
+        </a></li><li>
+        <a class="is-flex" href="#案例-2-二分查找">
+        <span class="has-mr-6">1.2</span>
+        <span>案例 2 二分查找</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#数学归纳法">
+        <span class="has-mr-6">2</span>
+        <span>数学归纳法</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#案例-3-棋盘麦粒">
+        <span class="has-mr-6">2.1</span>
+        <span>案例 3 棋盘麦粒</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#递归">
+        <span class="has-mr-6">3</span>
+        <span>递归</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#案例-4-列出-N-局猜拳获胜的所有情况">
+        <span class="has-mr-6">3.1</span>
+        <span>案例 4 列出 N 局猜拳获胜的所有情况</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#分治">
+        <span class="has-mr-6">4</span>
+        <span>分治</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#案例-5-归并排序">
+        <span class="has-mr-6">4.1</span>
+        <span>案例 5 归并排序</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#位运算">
+        <span class="has-mr-6">5</span>
+        <span>位运算</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#案例-6-使用位运算判断奇偶">
+        <span class="has-mr-6">5.1</span>
+        <span>案例 6 使用位运算判断奇偶</span>
+        </a></li><li>
+        <a class="is-flex" href="#案例-7-不使用额外空间来交换整型变量">
+        <span class="has-mr-6">5.2</span>
+        <span>案例 7 不使用额外空间来交换整型变量</span>
+        </a></li><li>
+        <a class="is-flex" href="#位的集合操作">
+        <span class="has-mr-6">5.3</span>
+        <span>位的集合操作</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#排列与组合">
+        <span class="has-mr-6">6</span>
+        <span>排列与组合</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://hexo.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hexo.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://kiruya.github.io/five-minutes-business-school/#/000" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Business School</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">kiruya.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.invokerll.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Invokerll&#39;s Blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.invokerll.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Algorithm/" style="font-size: 10px;">Algorithm</a> <a href="/tags/Event/" style="font-size: 10px;">Event</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/OOJS/" style="font-size: 10px;">OOJS</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T01:48:48.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/algorithm-basis/" class="has-link-black-ter is-size-6">算法基础思想</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-30T03:38:12.000Z">2019-05-30</time></div>
+                    <a href="/2019/05/30/node-custom-promise/" class="has-link-black-ter is-size-6">自己实现一个 Promise 类</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-27T12:02:58.000Z">2019-05-27</time></div>
+                    <a href="/2019/05/27/node-event-loop/" class="has-link-black-ter is-size-6">Node.js 中的事件循环</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-24T08:08:19.000Z">2019-05-24</time></div>
+                    <a href="/2019/05/24/js-re-introduction-1/" class="has-link-black-ter is-size-6">重新介绍 JavaScript（一）</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-23T07:07:58.000Z">2019-05-23</time></div>
+                    <a href="/2019/05/23/js-equality-and-sameness/" class="has-link-black-ter is-size-6">JavaScript 中的相等性判断</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Algorithm/">
+            <span class="level-start">
+                <span class="level-item">Algorithm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Algorithm/">
+                        <span class="tag">Algorithm</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Event/">
+                        <span class="tag">Event</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Promise/">
+                        <span class="tag">Promise</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T01:48:48.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/algorithm-basis/" class="has-link-black-ter is-size-6">算法基础思想</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-30T03:38:12.000Z">2019-05-30</time></div>
+                    <a href="/2019/05/30/node-custom-promise/" class="has-link-black-ter is-size-6">自己实现一个 Promise 类</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-27T12:02:58.000Z">2019-05-27</time></div>
+                    <a href="/2019/05/27/node-event-loop/" class="has-link-black-ter is-size-6">Node.js 中的事件循环</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-24T08:08:19.000Z">2019-05-24</time></div>
+                    <a href="/2019/05/24/js-re-introduction-1/" class="has-link-black-ter is-size-6">重新介绍 JavaScript（一）</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-05-23T07:07:58.000Z">2019-05-23</time></div>
+                    <a href="/2019/05/23/js-equality-and-sameness/" class="has-link-black-ter is-size-6">JavaScript 中的相等性判断</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Algorithm/">
+            <span class="level-start">
+                <span class="level-item">Algorithm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">5</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Algorithm/">
+                        <span class="tag">Algorithm</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Event/">
+                        <span class="tag">Event</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">5</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Promise/">
+                        <span class="tag">Promise</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="算法基础思想" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2019 Linkeo&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                <br>
+                <span id="busuanzi_container_site_uv">
+                共<span id="busuanzi_value_site_uv">0</span>个访客
+                </span>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download Icarus on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fas fa-palette"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
