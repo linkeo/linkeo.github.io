@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="星空博客">
 <meta property="og:description" content="编程求解第 N 个斐波那契是一个经典问题，除了常规解法，本文将介绍几个较为特别的解法。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-06-12T03:57:40.527Z">
+<meta property="og:updated_time" content="2019-06-12T04:51:39.047Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用矩阵求第 N 个斐波那契数">
 <meta name="twitter:description" content="编程求解第 N 个斐波那契是一个经典问题，除了常规解法，本文将介绍几个较为特别的解法。">
@@ -157,7 +157,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    13 分钟 读完 (大约 1935 个字)
+                    13 分钟 读完 (大约 1975 个字)
                 </span>
                 
                 
@@ -237,7 +237,7 @@
 
 <p>这样 <code>pow2x2(mat, exp)</code> 的时间复杂度为 $ O(log_2{n}) $，空间复杂度为 $ O(1) $。</p>
 <p>用 Q-Matrix 方法求斐波那契数只涉及一次矩阵求幂，那么它的的时间复杂度也为 $ O(log_2{n}) $，空间复杂度也为 $ O(1) $。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上所述方法的复杂度比较：</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上所述计算斐波那契数的方法复杂度比较：</p>
 <table>
 <thead>
 <tr>
@@ -248,13 +248,13 @@
 </thead>
 <tbody><tr>
 <td>递归</td>
-<td>$ O(2^n) $, $ O(n)^{[1]} $</td>
+<td>$ O(2^n) $ or $ O(n)^{[1]} $</td>
 <td>$ O(n) $</td>
 </tr>
 <tr>
 <td>动态规划</td>
 <td>$ O(n) $</td>
-<td>$ O(n) $, $ O(1)^{[2]} $</td>
+<td>$ O(n) $ or $ O(1)^{[2]} $</td>
 </tr>
 <tr>
 <td>斐波那契公式</td>
@@ -267,6 +267,10 @@
 <td>$ O(1) $</td>
 </tr>
 </tbody></table>
+<ul>
+<li>注 [1]：使用函数缓存优化递归执行时间</li>
+<li>注 [2]：优化状态存储来减少空间占用</li>
+</ul>
 <h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="用二分法求平方根"><a href="#用二分法求平方根" class="headerlink" title="用二分法求平方根"></a>用二分法求平方根</h3><p>上一篇文章中有提及到用二分法求平方根，这里直接贴出代码：</p>
 <figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; n 待求平方根的数</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; e 相对误差要求</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; limit 迭代次数限制</span></span><br><span class="line"><span class="hljs-comment"> * @return &#123;number&#125;</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSquareRootOf</span>(<span class="hljs-params">n, e = <span class="hljs-number">0.00000001</span>, limit = <span class="hljs-number">100000</span></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-literal">NaN</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span> || n === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> n;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">let</span> min = n &gt; <span class="hljs-number">1</span> ? <span class="hljs-number">1</span> : n;</span><br><span class="line">  <span class="hljs-keyword">let</span> max = n &gt; <span class="hljs-number">1</span> ? n : <span class="hljs-number">1</span>;</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> times = <span class="hljs-number">0</span>; times &lt; limit; times += <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> middle = min + (max - min) / <span class="hljs-number">2</span>;</span><br><span class="line">    <span class="hljs-keyword">const</span> square = middle * middle;</span><br><span class="line">    <span class="hljs-keyword">const</span> diff = <span class="hljs-built_in">Math</span>.abs(square / n - <span class="hljs-number">1</span>); <span class="hljs-comment">// 相对精度</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (diff &lt; e) &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> middle;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (square &gt; n) &#123;</span><br><span class="line">      max = middle;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      min = middle;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> min + (max - min) / <span class="hljs-number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
