@@ -2,26 +2,23 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
-<title>Node.js 中的事件循环 - 星空博客</title>
+<title>用矩阵求第 N 个斐波那契数 - 星空博客</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-    <meta name="description" content="Node.js 中有一些用于稍后执行的函数，比如 setTimeout(fn, ms)，setImmediate(fn) 以及 process.nextTick(fn)。如何区分它们，将与 Node.js 的事件循环机制息息相关。">
-<meta name="keywords" content="Node.js,Event">
+    <meta name="description" content="编程求解第 N 个斐波那契是一个经典问题，除了常规解法，本文将介绍几个较为特别的解法。">
+<meta name="keywords" content="Algorithm,Fibonnaci,Matrix">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Node.js 中的事件循环">
-<meta property="og:url" content="https://blog.linkeo.me/2019/05/27/node-event-loop/index.html">
+<meta property="og:title" content="用矩阵求第 N 个斐波那契数">
+<meta property="og:url" content="https://blog.linkeo.me/2019/06/11/binets-fibonacci/index.html">
 <meta property="og:site_name" content="星空博客">
-<meta property="og:description" content="Node.js 中有一些用于稍后执行的函数，比如 setTimeout(fn, ms)，setImmediate(fn) 以及 process.nextTick(fn)。如何区分它们，将与 Node.js 的事件循环机制息息相关。">
+<meta property="og:description" content="编程求解第 N 个斐波那契是一个经典问题，除了常规解法，本文将介绍几个较为特别的解法。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://blog.linkeo.me/images/posts/node-event-loop.png">
-<meta property="og:image" content="https://blog.linkeo.me/images/posts/node-event-loop.png">
-<meta property="og:updated_time" content="2019-05-28T03:15:20.258Z">
+<meta property="og:updated_time" content="2019-06-12T03:57:40.527Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Node.js 中的事件循环">
-<meta name="twitter:description" content="Node.js 中有一些用于稍后执行的函数，比如 setTimeout(fn, ms)，setImmediate(fn) 以及 process.nextTick(fn)。如何区分它们，将与 Node.js 的事件循环机制息息相关。">
-<meta name="twitter:image" content="https://blog.linkeo.me/images/posts/node-event-loop.png">
+<meta name="twitter:title" content="用矩阵求第 N 个斐波那契数">
+<meta name="twitter:description" content="编程求解第 N 个斐波那契是一个经典问题，除了常规解法，本文将介绍几个较为特别的解法。">
 
 
 
@@ -97,7 +94,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.png" alt="Node.js 中的事件循环" height="28">
+                <img src="/images/logo.png" alt="用矩阵求第 N 个斐波那契数" height="28">
             
             </a>
         </div>
@@ -150,17 +147,17 @@
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-05-27T12:02:58.000Z">2019-05-27</time>
+                <time class="level-item has-text-grey" datetime="2019-06-11T14:22:09.000Z">2019-06-11</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    20 分钟 读完 (大约 3040 个字)
+                    13 分钟 读完 (大约 1935 个字)
                 </span>
                 
                 
@@ -174,117 +171,114 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                Node.js 中的事件循环
+                用矩阵求第 N 个斐波那契数
             
         </h1>
         <div class="content">
-            <p>Node.js 中有一些用于稍后执行的函数，比如 <code>setTimeout(fn, ms)</code>，<code>setImmediate(fn)</code> 以及 <code>process.nextTick(fn)</code>。如何区分它们，将与 Node.js 的事件循环机制息息相关。</p>
+            <p>编程求解第 N 个斐波那契是一个经典问题，除了常规解法，本文将介绍几个较为特别的解法。</p>
 <a id="more"></a>
 
-<p>本文主要参考<a href="http://www.imooc.com/article/27083?block_id=tuijian_wz" target="_blank" rel="noopener">另一篇文章</a>进行转述。</p>
-<h2 id="一些常见的误解"><a href="#一些常见的误解" class="headerlink" title="一些常见的误解"></a>一些常见的误解</h2><ul>
-<li><p><strong>事件循环是 JS 引擎来处理的</strong></p>
-<p>最常见的误解就是，事件循环是 JavaScript 引擎（V8、SpiderMonkey 等）的一部分。实际上，事件循环只用到 JS 引擎来执行 JavaScript 代码。Node.js 的事件循环是由 libuv 来完成的。</p>
-</li>
-<li><p><strong>有一个栈或者队列来管理回调函数</strong></p>
-<p>首先排除用栈，其次也不是一个单一的队列。这个过程是复杂的，有多个队列（比如数据结构中的队列）参与。</p>
-</li>
-<li><p><strong>事件循环运行在一个单独的线程里面</strong></p>
-<p>因为一些错误的 Node.js 事件循环图，很多人认为有两个线程，一个执行 JavaScript 代码，另一个执行事件循环。事实上，这两个是在同一个线程执行的。</p>
-</li>
-<li><p><strong>在 <code>setTimeout</code> 中有系统的参与</strong></p>
-<p>另一个非常大的误解是 <code>setTimeout</code> 的回调函数在给定的延迟完成之后被（可能是 OS 或者内核）推进一个队列。</p>
-</li>
-<li><p><strong><code>setImmediate</code> 将回调函数放在第一个位置</strong></p>
-<p>作为常见的事件循环描述只有一个队列，所以一些开发者认为 <code>setImmediate</code> 将回调放在工作队列的前面。然而这是不正确的。</p>
-</li>
-</ul>
-<h2 id="事件循环的结构"><a href="#事件循环的结构" class="headerlink" title="事件循环的结构"></a>事件循环的结构</h2><p>下图描述的是 Node.js 中的事件循环过程：</p>
-<p><img src="/images/posts/node-event-loop.png" alt="Node.js 事件循环示意图"></p>
-<p>事件循环分为 6 个阶段，每个阶段负责特定的任务。每个阶段都有独立的队列（或其它用作队列的数据结构），JavaScript 代码可以在空闲/准备阶段之外的 5 个阶段执行。图中的 nextTick 队列与微任务队列不属于事件循环的一部分，而是在任何阶段都可以执行，它们有比事件循环更高的优先级。</p>
-<ul>
-<li><p><strong>计时器阶段（Timer）</strong></p>
-<p>计时器阶段是一个循环的开始，这个阶段处理计时器（<code>setTimeout</code>、<code>setInterval</code>）的回调。</p>
-<p>计时器队列是一个最小堆，它用于保留计时器和其回调。计时器阶段会检查计时器队列中过期的计时器，并执行它们的回调。</p>
-</li>
-<li><p><strong>I/O 回调阶段（Pending I/O Callbacks）</strong></p>
-<p>这个阶段执行 Pending Queue 中的回调。这些回调是在之前的操作中加入到队列的（一般是 I/O 操作完成时加入的）错误处理的回调也将在这里执行。</p>
-</li>
-<li><p><strong>空闲/等待阶段（Idle, Prepare）</strong></p>
-<p>这个阶段主要执行 Node.js 的一些内部操作，暂时不讨论其内容。</p>
-</li>
-<li><p><strong>轮询阶段（Poll）</strong></p>
-<p>这个阶段接受新传入的连接（建立 Socket 等等）和数据（读取文件等待）。这个阶段大致可以分成两个部分：</p>
-<ol>
-<li>如果 Watch Queue 里面有任务，它们将依次被执行。</li>
-<li>一旦队列空了，Node.js 就会等待新的连接或数据。等待的时间取决于多种因素（待会再看）</li>
-</ol>
-</li>
-<li><p><strong>检查阶段（Check）</strong></p>
-<p>轮询阶段专门用于处理 <code>setImmediate</code> 设置的回调。</p>
-</li>
-<li><p><strong>关闭回调（Close）</strong></p>
-<p>关闭回调都是在这里处理的，像一个清理的阶段。</p>
-</li>
-<li><p><strong>nextTick 队列与微任务队列</strong></p>
-<p>nextTick 队列中保存 <code>process.nextTick()</code> 设置的回调。而微任务队列保存 <code>Promise</code> 中的回调。它们不属于事件循环（libuv）的一部分，而是 Node.js 的一部分。在 C/C++与 JavaScript 交叉的过程中，它们都是尽可能快地被调用（不一定是当前的回调完成时）。</p>
-</li>
-</ul>
-<h2 id="事件循环的流程"><a href="#事件循环的流程" class="headerlink" title="事件循环的流程"></a>事件循环的流程</h2><p>当你用 Node.js 执行一段 JavaScript 脚本时，Node.js 首先进行执行脚本前的准备（比如准备全局环境、初始化事件循环等），然后解析并执行代码（所有同步代码以及微任务将在这时候被执行），执行完代码，将检查循环是否还有事情要做（Alive），如果没有，将进入进程结束流程，否则将进入事件循环。</p>
-<p><img src="/images/posts/node-event-loop.png" alt="Node.js 事件循环示意图"></p>
-<h3 id="计时器阶段"><a href="#计时器阶段" class="headerlink" title="计时器阶段"></a>计时器阶段</h3><p>根据前面的描述，计时器阶段将检查过期的计时器并执行回调。</p>
-<p>具体来说，计时器队列（最小堆）以时间升序来保存计时器。每次都检查堆顶的计时器是否过期，如果过期就取出队列并执行回调，否则直接进入下一个阶段（因为后面的计时器都一定没有过期）。</p>
-<p>当然，事件循环的每个阶段执行的任务数量是有最大限制的，达到这个数量后，即使有过期的计时器也不会执行，直接进入下一阶段。</p>
-<h3 id="I-O-回调阶段"><a href="#I-O-回调阶段" class="headerlink" title="I/O 回调阶段"></a>I/O 回调阶段</h3><p>I/O 回调阶段检查 Pending Queue 中是否有任务，如果有，依次执行，直到队列为空或者达到系统限制。</p>
-<p>之后将进入空闲阶段（Idle），然后 Node.js 将做一些内部准备，并进入轮询阶段。</p>
-<h3 id="轮询阶段"><a href="#轮询阶段" class="headerlink" title="轮询阶段"></a>轮询阶段</h3><p>这个阶段首先检查 Watcher Queue 中是否有任务（比如文件读响应，Socket 连接请求、HTTP 连接请求等），如果有，将依次执行，直到队列为空或者达到系统限制。</p>
-<p>如果没有要执行的回调，轮询阶段在某些条件下将等待一会儿。</p>
-<ul>
-<li>如果关闭阶段、空闲阶段、I/O 回调阶段或者关闭阶段任意一个队列有任务在等待，则轮询阶段将等待 0ms，并进入检查阶段。</li>
-<li>否则它将检查计时器队列的堆顶，并决定等待时间（如果已过期，则等待 0ms）</li>
-</ul>
-<h3 id="检查阶段"><a href="#检查阶段" class="headerlink" title="检查阶段"></a>检查阶段</h3><p>这个阶段将执行被 <code>setImmediate</code> 设置的回调，直到队列为空或者达到系统限制。</p>
-<h3 id="关闭阶段"><a href="#关闭阶段" class="headerlink" title="关闭阶段"></a>关闭阶段</h3><p>这个阶段将执行处理关闭或者销毁的 <code>close</code> 回调。这个阶段完成后，将再次检查循环是否活着（还有任务要做）。如果没有，将退出事件循环，进入进程结束阶段；如果有，将再次进入计时器阶段。</p>
-<h2 id="nextTick-队列与微任务队列"><a href="#nextTick-队列与微任务队列" class="headerlink" title="nextTick 队列与微任务队列"></a>nextTick 队列与微任务队列</h2><p>这两个队列会在一个阶段结束时尽可能快的运行。不像其他阶段，它们两个没有系统设置的最大限制，node 运行它们直到两个队列是空的。但是，nextTick 队列会比微任务队列有更高的任务优先级。</p>
-<p>根据<a href="https://blog.csdn.net/i10630226/article/details/81369841" target="_blank" rel="noopener">另一篇文章</a>的解释，这两个队列会在每个阶段结束前按顺序执行，直到它们为空。</p>
-<h2 id="进程池（Thread-Pool）"><a href="#进程池（Thread-Pool）" class="headerlink" title="进程池（Thread Pool）"></a>进程池（Thread Pool）</h2><p>一个普遍的误解是 Node.js 有一个处理所有异步操作的进程池。</p>
-<p>实际上，进程池是 libuv 的一部分，但不属于事件循环机制的一部分。而且并不是每个任务都要被进程池处理。libuv 能够灵活运用操作系统的异步 API 来保持环境为事件驱动的。而操作系统的异步 API 无法处理的任务（比如：DNS 查询、文件读取等），将由进程池来处理。进程池默认有 4 个进程，可以通过环境变量 <code>uv_threadpool_size</code> 来设置它的进程数量（最多可设置 128 个）。</p>
-<h2 id="帮助理解的例子"><a href="#帮助理解的例子" class="headerlink" title="帮助理解的例子"></a>帮助理解的例子</h2><h3 id="基础理解"><a href="#基础理解" class="headerlink" title="基础理解"></a>基础理解</h3><p>下面代码的打印顺序如何？</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'setTimeout'</span>);</span><br><span class="line">&#125;, <span class="hljs-number">0</span>);</span><br><span class="line">setImmediate(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'setImmediate'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>斐波那契数列的定义如下：</p>
+<p>$$<br>\begin{align}<br>Fib_0 &amp;= 0 \\<br>Fib_1 &amp;= 1 \\<br>\vdots \\<br>Fib_n &amp;= Fib_{n-1} + Fib_{n-2} \quad (n \in \mathbb Z^+, n \geq 2) \\<br>\end{align}<br>$$</p>
+<h2 id="常规解法"><a href="#常规解法" class="headerlink" title="常规解法"></a>常规解法</h2><h3 id="递归法"><a href="#递归法" class="headerlink" title="递归法"></a>递归法</h3><p>最直观的方法是直接将斐波那契数列的定义写成对应的递归函数：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fib</span>(<span class="hljs-params">n</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> fib(n - <span class="hljs-number">1</span>) + fib(n - <span class="hljs-number">2</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>你可能会认为是 ‘setTimeout’ 先被打印出来，或者 ‘setImmediate’ 先被打印出来。但是，这个例子的打印顺序是不确定的。因为在计时器阶段，可能不会检查到计时器过期。</p>
-<p>首先，根据 Node.js 的文档，<code>setTimeout</code> 的延时小于 1ms 或者大于 2147483647ms 时，将重置为 1ms。进入计时器阶段时，会记录一个时间，然后根据执行代码时的系统性能表现，检查计时器时，可能已经经过了 1ms，也可能没有经过。所以在第一次循环 ‘setTimeout’ 不一定会被打印，而 ‘setImmediate’ 一定会被打印。</p>
-<p>但是，如果这段代码位于 I/O 回调中的话，’setImmediate’ 一定会在 ‘setTimeout’ 之前被打印。</p>
-<h3 id="更好地理解计时器"><a href="#更好地理解计时器" class="headerlink" title="更好地理解计时器"></a>更好地理解计时器</h3><figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;</span><br><span class="line"><span class="hljs-keyword">const</span> start = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  i++;</span><br><span class="line">  <span class="hljs-keyword">if</span> (i &lt; <span class="hljs-number">1000</span>) &#123;</span><br><span class="line">    setImmediate(foo);</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> end = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Execution time: '</span>, end - start);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">foo();</span><br></pre></td></tr></table></figure>
+<p>根据 $ Fib_n = Fib_{n-1} + Fib_{n-2} $ 进行递归，最左侧的递归数高度为 $ n $，最右侧的递归数高度为 $ \frac{n}{2} $，那么我们可以得出递归数的节点数量约为 $ \frac{2^n}{2} = 2^{n-1} $，而递归树的高度为 $ n $。</p>
+<p>所以递归法的时间复杂度为 $ O(2^n) $，空间复杂度为 $ O(n) $。</p>
+<p>直接递归需要进行大量的重复计算，我们可以加入函数缓存来降低计算次数。</p>
+<p>带函数缓存的递归解法如下：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fib</span>(<span class="hljs-params">n</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (!fib.cache[n]) &#123;</span><br><span class="line">    fib.cache[n] = fib(n - <span class="hljs-number">1</span>) + fib(n - <span class="hljs-number">2</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> fib.cache[n];</span><br><span class="line">&#125;</span><br><span class="line">fib.cache = [];</span><br></pre></td></tr></table></figure>
 
-<p>上面的例子是连续使用 <code>setImmediate</code> 设置回调，直到 <code>i == 1000</code>。在我的 Macbook Pro 上面用 Node.js 10.14.1 执行，大约需要 80ms。</p>
-<p>把其中的 <code>setImmediate</code> 修改为 <code>setTimeout</code>：</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;</span><br><span class="line"><span class="hljs-keyword">const</span> start = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  i++;</span><br><span class="line">  <span class="hljs-keyword">if</span> (i &lt; <span class="hljs-number">1000</span>) &#123;</span><br><span class="line">    setTimeout(foo, <span class="hljs-number">0</span>);</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> end = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>();</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Execution time: '</span>, end - start);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">foo();</span><br></pre></td></tr></table></figure>
+<p>加入函数缓存后，对每一个重复位置的计算将只进行一次，因此时间复杂度降为 $ O(n) $，但是将多出 $ n $ 个数字的空间用于缓存结果，空间复杂度为 $ O(n) + O(n) = O(n) $。</p>
+<h3 id="迭代法-动态规划"><a href="#迭代法-动态规划" class="headerlink" title="迭代法 / 动态规划"></a>迭代法 / 动态规划</h3><p>不难发现，这个问题可以被分解为一些包含最优子结构的子问题，即它的最优解可以从其子问题的最优解来有效地构建，我们可以使用动态规划来解决这一问题。</p>
+<p>当然，因为斐波那契数列的公式比较简单，我们也可以简单地将递归的步骤直接转化为循环迭代，其逻辑与动态规划的方法一致。</p>
+<p>动态规划的解法如下：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fib</span>(<span class="hljs-params">n</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> dp = [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>];</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">2</span>; i &lt;= n; i += <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    dp[i] = dp[i - <span class="hljs-number">1</span>] + dp[i - <span class="hljs-number">2</span>];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> dp[n];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>在同样的环境下执行修改后的代码，将需要约 1400ms 毫秒。</p>
-<p>它们的差距在于，首先 <code>setTimeout</code> 至少会产生 1ms 的延时，其次 <code>setTimeout</code> 需要花一些时间来注册计时器，而计时器阶段的过期检查也需要一些开销。而再 <code>setImmediate</code> 的阶段，再回调中注册 <code>setImmediate</code> 将导致队列仍不为空，所以也不会跳出这一阶段（直到系统限制），将进行更少的循环，也节省了一些时间。</p>
-<h3 id="nextTick-与计时器"><a href="#nextTick-与计时器" class="headerlink" title="nextTick() 与计时器"></a><code>nextTick()</code> 与计时器</h3><figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  i++;</span><br><span class="line">  <span class="hljs-keyword">if</span> (i &gt; <span class="hljs-number">20</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'foo'</span>);</span><br><span class="line">  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'setTimeout'</span>);</span><br><span class="line">  &#125;, <span class="hljs-number">0</span>);</span><br><span class="line">  process.nextTick(foo);</span><br><span class="line">&#125;</span><br><span class="line">setTimeout(foo, <span class="hljs-number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>该解法的时间复杂度与空间复杂度均为 $ O(n) $。</p>
+<p>我们发现，每个状态的只与前两个状态相关，我们可以将储存状态的变量减少到 2 个来优化空间使用。</p>
+<p>优化空间的动态规划解法如下：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fib</span>(<span class="hljs-params">n</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">let</span> prev = <span class="hljs-number">0</span>; <span class="hljs-comment">// 保存前一个值</span></span><br><span class="line">  <span class="hljs-keyword">let</span> curr = <span class="hljs-number">1</span>; <span class="hljs-comment">// 保存当前值，初始化为 fib(1)</span></span><br><span class="line">  <span class="hljs-comment">// 迭代 n-1 次</span></span><br><span class="line">  <span class="hljs-keyword">while</span> (--n &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    [prev, curr] = [curr, prev + curr];</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> curr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>上面的例子将输出 20 次 ‘foo’，再输出 20 次 ‘setTimeout’。2 秒后，连续进行<code>nextTick()</code> 调用，然后检查别的任务（<code>setTimeout</code>）。</p>
-<p>所以是每个回调执行完之后，开始检查 nextTick 队列的吗？再看看下面的例子。</p>
-<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">foo</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="line">  i++;</span><br><span class="line">  <span class="hljs-keyword">if</span> (i &gt; <span class="hljs-number">20</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'foo'</span>, i);</span><br><span class="line">  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'setTimeout'</span>, i);</span><br><span class="line">  &#125;, <span class="hljs-number">0</span>);</span><br><span class="line">  process.nextTick(foo);</span><br><span class="line">&#125;</span><br><span class="line">setTimeout(foo, <span class="hljs-number">2</span>);</span><br><span class="line">setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Other setTimeout'</span>);</span><br><span class="line">&#125;, <span class="hljs-number">2</span>);</span><br></pre></td></tr></table></figure>
+<p>优化后，动态规划解法的时间复杂度为 $ O(n) $，空间复杂度为 $ O(1) $。</p>
+<h2 id="非常规解法"><a href="#非常规解法" class="headerlink" title="非常规解法"></a>非常规解法</h2><p>除了以上较为简单就可以想到的解法，如下方法虽然较难想到，但也是计算更加高效的算法。</p>
+<h3 id="斐波那契公式"><a href="#斐波那契公式" class="headerlink" title="斐波那契公式"></a>斐波那契公式</h3><p>先由数学的方法求出斐波那契数列的通项。</p>
+<p>我们设 $ Fib_n = a^n $，那么根据递推公式，我们可以得到 $ a^n = a^{n-1} + a^{n-2} $，约分一下可以得到 $ a^2 = a + 1 $ 即二次方程 $ a^2 - a - 1 = 0 $</p>
+<p>对二次方程求解可以得到：</p>
+<p>$$<br>a = \frac{1 \pm \sqrt 5}{2 \sqrt 5}<br>$$</p>
+<p>那么我们再设 $ Fib_n = A \left( \frac{1 + \sqrt 5}{2 \sqrt 5} * C \right)^n + B \left( \frac{1 - \sqrt 5}{2 \sqrt 5} * C \right)^n $</p>
+<p>代入数列前三项可以得到：</p>
+<p>$$<br>\begin{align}<br>Fib_0 &amp;= A + B = 0 \\<br>Fib_1 &amp;= \frac{1 + \sqrt 5}{2 \sqrt 5} AC + \frac{1 - \sqrt 5}{2 \sqrt 5} BC = 1 \\<br>Fib_2 &amp;= \frac{3 + \sqrt 5}{10} AC^2 + \frac{3 - \sqrt 5}{10} BC^2 = 1 \\<br>\end{align}<br>$$</p>
+<p>求解以上关于 $ A, B, C $ 的方程组可以得到：</p>
+<p>$$<br>\begin{align}<br>A &amp;= \frac{1}{\sqrt 5} \\<br>B &amp;= - \frac{1}{\sqrt 5} \\<br>C &amp;= \sqrt 5 \\<br>\end{align}<br>$$</p>
+<p>代入 $ Fib_n = A \left( \frac{1 + \sqrt 5}{2 \sqrt 5} * C \right)^n + B \left( \frac{1 - \sqrt 5}{2 \sqrt 5} * C \right)^n $ 就可以得到斐波那契公式。</p>
+<p>斐波那契公式：</p>
+<p>$$<br>F_n = \frac{1}{\sqrt 5} * \left[ \left(\frac{1 + \sqrt 5}{2}\right)^n - \left(\frac{1 - \sqrt 5}{2}\right)^n \right]<br>$$</p>
+<p>那么根据斐波那契公式，我们就可以编码求解了：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fib</span>(<span class="hljs-params">n</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> sqrt5 = <span class="hljs-built_in">Math</span>.sqrt(<span class="hljs-number">5</span>);</span><br><span class="line">  <span class="hljs-keyword">const</span> value =</span><br><span class="line">    (<span class="hljs-built_in">Math</span>.pow((<span class="hljs-number">1</span> + sqrt5) / <span class="hljs-number">2</span>, n) - <span class="hljs-built_in">Math</span>.pow((<span class="hljs-number">1</span> - sqrt5) / <span class="hljs-number">2</span>, n)) / sqrt5;</span><br><span class="line">  <span class="hljs-keyword">return</span> <span class="hljs-built_in">Math</span>.round(value);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p>这个例子很可能会在第一个 ‘foo’ 打印之后打印 ‘other setTimeout’。</p>
-<p>相同的计时器分成一组，nextTick 队列会在这组回调执行完之后执行。</p>
-<h2 id="一些普遍的问题"><a href="#一些普遍的问题" class="headerlink" title="一些普遍的问题"></a>一些普遍的问题</h2><ul>
-<li><p>JavaScript 代码是在哪里执行的？</p>
-<p>大多数人会认为事件循环有一个独立的线程执行，将回调推入一个队列，然后负责执行 JavaScript 的线程来依次执行。然而，事件循环和 JavaScript 的执行是同一个线程里的。所以，如果 JavaScript 代码不完成的话，事件循环不会向后走。</p>
-</li>
-<li><p>为什么有了 <code>setTimeout(fn, 0)</code> 还需要 <code>setImmediate(fn)</code>？</p>
-<p>因为 <code>setTimeout(fn, 0)</code> 的 0 不是 0ms，而是 1ms（因为至少要 1ms）。其次，<code>setImmediate</code> 可以减少额外的检查。而且 <code>setImmediate</code> 设置的回调将于轮询阶段的下一个阶段执行，因此用于 I/O 回调中，可以尽早执行。</p>
-</li>
-<li><p>为什么 <code>setImmediate</code> 与 <code>process.nextTick</code> 的意思相反？</p>
-<p>因为历史原因导致的命名问题。</p>
-</li>
-<li><p>如果在进程结束回调中使用 <code>setTimeout</code> 会如何？</p>
-<p>它也许会创建计时器，但是回调将不会被调用。因为这时已经结束了事件循环。</p>
-</li>
-</ul>
+<p>该方法的需要进行 1 次平方根与 2 次求幂操作，<a href="#用二分法求平方根">用二分法求平方根</a>的复杂度为 $ O(log_2{n}) $，用<a href="#用快速幂方法求幂">快速幂方法</a>求幂的复杂度为 $ O(log_2{n}) $，所以总体时间复杂度为 $ O(log_2{n}) $。同理，空间复杂度为 $ O(1) $。</p>
+<p>但是由于涉及到浮点数计算，该方法可能会得到近似值而不是准确值。</p>
+<h3 id="Q-Matrix-方法"><a href="#Q-Matrix-方法" class="headerlink" title="Q-Matrix 方法"></a>Q-Matrix 方法</h3><p>Q-Matrix 方法是一种利用矩阵相乘特性来巧妙求解斐波那契数列的方式。公式如下：</p>
+<p>$$<br>\begin{bmatrix}<br>F_{n+1} &amp; F_n \\<br>F_n &amp; F_{n-1} \\<br>\end{bmatrix}<br>=
+\begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 0 \\ \end{bmatrix}^n<br>\quad (n \in \mathbb Z^+)<br>$$</p>
+<p>我们令 $ Q = \begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 0 \\ \end{bmatrix} $，则：</p>
+<p>$$<br>Q^n = \begin{bmatrix}<br>F_{n+1} &amp; F_n \\<br>F_n &amp; F_{n-1} \\<br>\end{bmatrix}<br>\quad (n \in \mathbb Z^+)<br>$$</p>
+<p>我们可以用数学归纳法来证明上述公式成立，首先检验第一项满足条件：</p>
+<p>$$<br>Q^1 = \begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 0 \\ \end{bmatrix} = \begin{bmatrix} Fib_2 &amp; Fib_1 \\ Fib_1 &amp; Fib_0 \\ \end{bmatrix}<br>$$</p>
+<p>假设第 n-1 项满足条件，证明第 n 项也满足：</p>
+<p>$$<br>\begin{align}<br>Q^n &amp;= Q^{n-1} Q \\<br>    &amp;= \begin{bmatrix}<br>F_n &amp; F_{n-1} \\<br>F_{n-1} &amp; F_{n-2} \\<br>\end{bmatrix} \begin{bmatrix} 1 &amp; 1 \\ 1 &amp; 0 \\ \end{bmatrix} \\<br>    &amp;= \begin{bmatrix}<br>F_n + F_{n-1} &amp; F_{n-1} + F_{n-2} \\<br>F_{n-1} + F{n-2} &amp; F_{n-1} \\<br>\end{bmatrix} \\<br>    &amp;= \begin{bmatrix}<br>F_{n+1} &amp; F_n \\<br>F_n &amp; F_{n-1} \\<br>\end{bmatrix}<br>\end{align}<br>$$</p>
+<p>由上述步骤即可证明对于 $ n \in \mathbb Z^+ $ 结论成立，反过来可得对于 $ n \in \mathbb Z^+, n \geq 2 $，$ Fib_n = Q^{n-1}[0,0] $。</p>
+<p>那么转换成代码即：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fib</span>(<span class="hljs-params">n</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">const</span> Q = [[<span class="hljs-number">1</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">0</span>]];</span><br><span class="line">  <span class="hljs-keyword">const</span> powQ = pow2x2(Q, n - <span class="hljs-number">1</span>);</span><br><span class="line">  <span class="hljs-keyword">return</span> powQ[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中 <code>pow2x2(mat, exp)</code> 用于求 2x2 矩阵的正整数次幂。我们可以将<a href="#用快速幂方法求幂">快速幂方法</a>延伸到矩阵求幂：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">pow2x2</span>(<span class="hljs-params">mat, exp</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> ret = [[<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>]];</span><br><span class="line">  <span class="hljs-keyword">let</span> tmp = mat;</span><br><span class="line">  <span class="hljs-keyword">while</span> (exp &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> ((exp &amp; <span class="hljs-number">1</span>) === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">      ret = mul2x2(ret, tmp);</span><br><span class="line">    &#125;</span><br><span class="line">    tmp = mul2x2(tmp, tmp);</span><br><span class="line">    exp &gt;&gt;= <span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> ret;</span><br><span class="line">&#125;</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mul2x2</span>(<span class="hljs-params">A, B</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">const</span> C = [[<span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">0</span>]];</span><br><span class="line">  C[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] = A[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] * B[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] + A[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] * B[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>];</span><br><span class="line">  C[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] = A[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] * B[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] + A[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] * B[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>];</span><br><span class="line">  C[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>] = A[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>] * B[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] + A[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>] * B[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>];</span><br><span class="line">  C[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>] = A[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>] * B[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>] + A[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>] * B[<span class="hljs-number">1</span>][<span class="hljs-number">1</span>];</span><br><span class="line">  <span class="hljs-keyword">return</span> C;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样 <code>pow2x2(mat, exp)</code> 的时间复杂度为 $ O(log_2{n}) $，空间复杂度为 $ O(1) $。</p>
+<p>用 Q-Matrix 方法求斐波那契数只涉及一次矩阵求幂，那么它的的时间复杂度也为 $ O(log_2{n}) $，空间复杂度也为 $ O(1) $。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>以上所述方法的复杂度比较：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>时间复杂度</th>
+<th>空间复杂度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>递归</td>
+<td>$ O(2^n) $, $ O(n)^{[1]} $</td>
+<td>$ O(n) $</td>
+</tr>
+<tr>
+<td>动态规划</td>
+<td>$ O(n) $</td>
+<td>$ O(n) $, $ O(1)^{[2]} $</td>
+</tr>
+<tr>
+<td>斐波那契公式</td>
+<td>$ O(log_2{n}) $</td>
+<td>$ O(1) $</td>
+</tr>
+<tr>
+<td>Q-Matrix</td>
+<td>$ O(log_2{n}) $</td>
+<td>$ O(1) $</td>
+</tr>
+</tbody></table>
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="用二分法求平方根"><a href="#用二分法求平方根" class="headerlink" title="用二分法求平方根"></a>用二分法求平方根</h3><p>上一篇文章中有提及到用二分法求平方根，这里直接贴出代码：</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">/**</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; n 待求平方根的数</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; e 相对误差要求</span></span><br><span class="line"><span class="hljs-comment"> * @param &#123;number&#125; limit 迭代次数限制</span></span><br><span class="line"><span class="hljs-comment"> * @return &#123;number&#125;</span></span><br><span class="line"><span class="hljs-comment"> */</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">getSquareRootOf</span>(<span class="hljs-params">n, e = <span class="hljs-number">0.00000001</span>, limit = <span class="hljs-number">100000</span></span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n &lt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> <span class="hljs-literal">NaN</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">if</span> (n === <span class="hljs-number">0</span> || n === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">return</span> n;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">let</span> min = n &gt; <span class="hljs-number">1</span> ? <span class="hljs-number">1</span> : n;</span><br><span class="line">  <span class="hljs-keyword">let</span> max = n &gt; <span class="hljs-number">1</span> ? n : <span class="hljs-number">1</span>;</span><br><span class="line">  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> times = <span class="hljs-number">0</span>; times &lt; limit; times += <span class="hljs-number">1</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">const</span> middle = min + (max - min) / <span class="hljs-number">2</span>;</span><br><span class="line">    <span class="hljs-keyword">const</span> square = middle * middle;</span><br><span class="line">    <span class="hljs-keyword">const</span> diff = <span class="hljs-built_in">Math</span>.abs(square / n - <span class="hljs-number">1</span>); <span class="hljs-comment">// 相对精度</span></span><br><span class="line">    <span class="hljs-keyword">if</span> (diff &lt; e) &#123;</span><br><span class="line">      <span class="hljs-keyword">return</span> middle;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (square &gt; n) &#123;</span><br><span class="line">      max = middle;</span><br><span class="line">    &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">      min = middle;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> min + (max - min) / <span class="hljs-number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分析可知其时间复杂度为 $ O(log_2{n}) $，空间复杂度为 $ O(1) $。</p>
+<h3 id="用快速幂方法求幂"><a href="#用快速幂方法求幂" class="headerlink" title="用快速幂方法求幂"></a>用快速幂方法求幂</h3><p>根据正整数的二进制数表示法，我们可以得到下列规律：</p>
+<p>$$<br>13 = 1101_2 = 2^3 + 2^2 + 2^0<br>$$</p>
+<p>那么对于乘方我们可以得到如下规律：</p>
+<p>$$<br>a^{13} = a^{1101_2} = a^{(2^3 + 2^2 + 2^0)} = a^{2^3} * a^{2^2} * a^{2^0}<br>$$</p>
+<p>利用这个规律，我们可以用 $ O(log_2{n}) $ 次相乘就可以得到 $ a^n \ (n \in \mathbb Z^+) $。</p>
+<figure class="highlight js hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">pow</span>(<span class="hljs-params">num, exp</span>) </span>&#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> ret = [[<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>]];</span><br><span class="line">  <span class="hljs-keyword">let</span> tmp = num; <span class="hljs-comment">// num ^ 1</span></span><br><span class="line">  <span class="hljs-keyword">while</span> (exp &gt; <span class="hljs-number">0</span>) &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> ((exp &amp; <span class="hljs-number">1</span>) === <span class="hljs-number">1</span>) &#123;</span><br><span class="line">      ret *= tmp; <span class="hljs-comment">// ret *= num ^ (2 ^ (i - 1))</span></span><br><span class="line">    &#125;</span><br><span class="line">    tmp *= tmp; <span class="hljs-comment">// num ^ (2 ^ i), i 为循环次数</span></span><br><span class="line">    exp &gt;&gt;= <span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-keyword">return</span> ret;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分析可知其时间复杂度为 $ O(log_2{n}) $，空间复杂度为 $ O(1) $。</p>
 
         </div>
         
@@ -292,7 +286,7 @@
             <div class="level-start">
                 <div class="level-item">
                     <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                    <a class="has-link-grey -link" href="/tags/Event/">Event</a>, <a class="has-link-grey -link" href="/tags/Node-js/">Node.js</a>
+                    <a class="has-link-grey -link" href="/tags/Algorithm/">Algorithm</a>, <a class="has-link-grey -link" href="/tags/Fibonnaci/">Fibonnaci</a>, <a class="has-link-grey -link" href="/tags/Matrix/">Matrix</a>
                 </div>
             </div>
         </div>
@@ -309,17 +303,10 @@
 <div class="card card-transparent">
     <div class="level post-navigation is-flex-wrap is-mobile">
         
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/05/30/node-custom-promise/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">自己实现一个 Promise 类</span>
-            </a>
-        </div>
-        
         
         <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/05/24/js-re-introduction-1/">
-                <span class="level-item">重新介绍 JavaScript（一）</span>
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/06/06/algorithm-basis/">
+                <span class="level-item">算法基础思想</span>
                 <i class="level-item fas fa-chevron-right"></i>
             </a>
         </div>
@@ -425,66 +412,46 @@
                 目录
             </h3>
             <ul class="menu-list"><li>
-        <a class="is-flex" href="#一些常见的误解">
+        <a class="is-flex" href="#常规解法">
         <span class="has-mr-6">1</span>
-        <span>一些常见的误解</span>
+        <span>常规解法</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#递归法">
+        <span class="has-mr-6">1.1</span>
+        <span>递归法</span>
         </a></li><li>
-        <a class="is-flex" href="#事件循环的结构">
+        <a class="is-flex" href="#迭代法-动态规划">
+        <span class="has-mr-6">1.2</span>
+        <span>迭代法 / 动态规划</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#非常规解法">
         <span class="has-mr-6">2</span>
-        <span>事件循环的结构</span>
+        <span>非常规解法</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#斐波那契公式">
+        <span class="has-mr-6">2.1</span>
+        <span>斐波那契公式</span>
         </a></li><li>
-        <a class="is-flex" href="#事件循环的流程">
+        <a class="is-flex" href="#Q-Matrix-方法">
+        <span class="has-mr-6">2.2</span>
+        <span>Q-Matrix 方法</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#总结">
         <span class="has-mr-6">3</span>
-        <span>事件循环的流程</span>
-        </a><ul class="menu-list"><li>
-        <a class="is-flex" href="#计时器阶段">
-        <span class="has-mr-6">3.1</span>
-        <span>计时器阶段</span>
+        <span>总结</span>
         </a></li><li>
-        <a class="is-flex" href="#I-O-回调阶段">
-        <span class="has-mr-6">3.2</span>
-        <span>I/O 回调阶段</span>
-        </a></li><li>
-        <a class="is-flex" href="#轮询阶段">
-        <span class="has-mr-6">3.3</span>
-        <span>轮询阶段</span>
-        </a></li><li>
-        <a class="is-flex" href="#检查阶段">
-        <span class="has-mr-6">3.4</span>
-        <span>检查阶段</span>
-        </a></li><li>
-        <a class="is-flex" href="#关闭阶段">
-        <span class="has-mr-6">3.5</span>
-        <span>关闭阶段</span>
-        </a></li></ul></li><li>
-        <a class="is-flex" href="#nextTick-队列与微任务队列">
+        <a class="is-flex" href="#附录">
         <span class="has-mr-6">4</span>
-        <span>nextTick 队列与微任务队列</span>
-        </a></li><li>
-        <a class="is-flex" href="#进程池（Thread-Pool）">
-        <span class="has-mr-6">5</span>
-        <span>进程池（Thread Pool）</span>
-        </a></li><li>
-        <a class="is-flex" href="#帮助理解的例子">
-        <span class="has-mr-6">6</span>
-        <span>帮助理解的例子</span>
+        <span>附录</span>
         </a><ul class="menu-list"><li>
-        <a class="is-flex" href="#基础理解">
-        <span class="has-mr-6">6.1</span>
-        <span>基础理解</span>
+        <a class="is-flex" href="#用二分法求平方根">
+        <span class="has-mr-6">4.1</span>
+        <span>用二分法求平方根</span>
         </a></li><li>
-        <a class="is-flex" href="#更好地理解计时器">
-        <span class="has-mr-6">6.2</span>
-        <span>更好地理解计时器</span>
-        </a></li><li>
-        <a class="is-flex" href="#nextTick-与计时器">
-        <span class="has-mr-6">6.3</span>
-        <span>nextTick() 与计时器</span>
-        </a></li></ul></li><li>
-        <a class="is-flex" href="#一些普遍的问题">
-        <span class="has-mr-6">7</span>
-        <span>一些普遍的问题</span>
-        </a></li></ul>
+        <a class="is-flex" href="#用快速幂方法求幂">
+        <span class="has-mr-6">4.2</span>
+        <span>用快速幂方法求幂</span>
+        </a></li></ul></li></ul>
         </div>
     </div>
 </div>
@@ -1013,7 +980,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.png" alt="Node.js 中的事件循环" height="28">
+                    <img src="/images/logo.png" alt="用矩阵求第 N 个斐波那契数" height="28">
                 
                 </a>
                 <p class="is-size-7">
