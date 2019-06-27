@@ -7,22 +7,22 @@
 
 
 
-    <meta name="description" content="虽然 Node.js 的学习曲线非常平坦，但是保持 Node.js 运行的机制非常复杂。为了避免一些性能缺陷，我们必须理解其机制。 这篇文章将介绍 Node.js 的内存管理方式，并介绍如何定位内存相关的问题。">
+    <meta name="description" content="虽然 Node.js 的学习曲线非常平坦，但是保持 Node.js 运行的机制非常复杂。为了避免一些性能缺陷，我们必须理解其机制。 这篇文章将介绍 Node.js 的内存管理方式。">
 <meta name="keywords" content="Node.js,Performance">
 <meta property="og:type" content="article">
 <meta property="og:title" content="理解 Node.js 中的垃圾回收机制">
 <meta property="og:url" content="https://blog.linkeo.me/2019/06/21/nodejs-understanding-gc/index.html">
 <meta property="og:site_name" content="星空博客">
-<meta property="og:description" content="虽然 Node.js 的学习曲线非常平坦，但是保持 Node.js 运行的机制非常复杂。为了避免一些性能缺陷，我们必须理解其机制。 这篇文章将介绍 Node.js 的内存管理方式，并介绍如何定位内存相关的问题。">
+<meta property="og:description" content="虽然 Node.js 的学习曲线非常平坦，但是保持 Node.js 运行的机制非常复杂。为了避免一些性能缺陷，我们必须理解其机制。 这篇文章将介绍 Node.js 的内存管理方式。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://blog.linkeo.me/images/posts/v8-gc-memory.png">
 <meta property="og:image" content="https://blog.linkeo.me/images/posts/v8-gc-young-generation.png">
 <meta property="og:image" content="https://blog.linkeo.me/images/posts/v8-gc-mark-sweep.png">
 <meta property="og:image" content="https://blog.linkeo.me/images/posts/v8-gc-mark-compact.png">
-<meta property="og:updated_time" content="2019-06-27T11:48:21.654Z">
+<meta property="og:updated_time" content="2019-06-27T11:49:51.355Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解 Node.js 中的垃圾回收机制">
-<meta name="twitter:description" content="虽然 Node.js 的学习曲线非常平坦，但是保持 Node.js 运行的机制非常复杂。为了避免一些性能缺陷，我们必须理解其机制。 这篇文章将介绍 Node.js 的内存管理方式，并介绍如何定位内存相关的问题。">
+<meta name="twitter:description" content="虽然 Node.js 的学习曲线非常平坦，但是保持 Node.js 运行的机制非常复杂。为了避免一些性能缺陷，我们必须理解其机制。 这篇文章将介绍 Node.js 的内存管理方式。">
 <meta name="twitter:image" content="https://blog.linkeo.me/images/posts/v8-gc-memory.png">
 
 
@@ -162,7 +162,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    20 分钟 读完 (大约 3061 个字)
+                    20 分钟 读完 (大约 3046 个字)
                 </span>
                 
                 
@@ -181,7 +181,7 @@
         </h1>
         <div class="content">
             <p>虽然 Node.js 的学习曲线非常平坦，但是保持 Node.js 运行的机制非常复杂。为了避免一些性能缺陷，我们必须理解其机制。</p>
-<p>这篇文章将介绍 Node.js 的内存管理方式，并介绍如何定位内存相关的问题。</p>
+<p>这篇文章将介绍 Node.js 的内存管理方式。</p>
 <a id="more"></a>
 
 <p>V8 引擎是 Google 为 Chrome 浏览器而开发 JavaScript 引擎，但同时也可以脱离 Chrome 独立使用。Node.js 内部就是使用了 V8 引擎来执行 JavaScript 代码。</p>
