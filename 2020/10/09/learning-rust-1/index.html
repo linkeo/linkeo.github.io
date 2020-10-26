@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+<title>Rust学习笔记1 - 星空博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="本文是 Rust 学习笔记系列第一篇，参考 Rust 指南的第 2 到 3 章，涉及变量、数据类型、函数、注释、控制流。">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust学习笔记1">
+<meta property="og:url" content="https://blog.linkeo.me/2020/10/09/learning-rust-1/index.html">
+<meta property="og:site_name" content="星空博客">
+<meta property="og:description" content="本文是 Rust 学习笔记系列第一篇，参考 Rust 指南的第 2 到 3 章，涉及变量、数据类型、函数、注释、控制流。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-10-26T10:33:40.393Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust学习笔记1">
+<meta name="twitter:description" content="本文是 Rust 学习笔记系列第一篇，参考 Rust 指南的第 2 到 3 章，涉及变量、数据类型、函数、注释、控制流。">
+
+
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="/icons/all.css">
+<link rel="stylesheet" href="/fonts/css.css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="Rust学习笔记1" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Posts</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Repository" href="https://github.com/linkeo/linkeo.github.io">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-10-09T03:46:04.000Z">2020-10-09</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    17 分钟 读完 (大约 2493 个字)
+                </span>
+                
+                
+                <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
+                    <i class="far fa-eye"></i>
+                    <span id="busuanzi_value_page_pv">0</span>次访问
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Rust学习笔记1
+            
+        </h1>
+        <div class="content">
+            <p>本文是 Rust 学习笔记系列第一篇，参考 Rust 指南的第 2 到 3 章，涉及变量、数据类型、函数、注释、控制流。</p>
+<a id="more"></a>
+
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>Rust 中用 <code>let</code> 关键字定义变量，变量默认都是不可变的，用 <code>let mut</code> 定义可变的变量。（可变变量必须显式使用 <code>mut</code> 声明，这是 Rust 从安全方面的考虑）</p>
+<p>不可变的变量一旦初始化就不能再被改变。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> foo = <span class="hljs-number">5</span>; <span class="hljs-comment">// 不可变</span></span><br><span class="line">  <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> bar = <span class="hljs-number">5</span>; <span class="hljs-comment">// 可变</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> x;</span><br><span class="line">  x = <span class="hljs-number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><p>和不可变变量类似，常量也是将一个不可变的值绑定到标识符。</p>
+<p>常量用 <code>const</code> 关键字定义，无法用 <code>mut</code> 将常量定义为可变，且常量的类型必须显式指定。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">const</span> MAX_POINTS: <span class="hljs-built_in">u32</span> = <span class="hljs-number">100_000</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Rust 的命名习惯是将常量定义为大写字母加下划线的风格</p>
+</blockquote>
+<p>常量在程序执行过程中一直存在，在其定义的作用域中有效。</p>
+<h3 id="变量覆盖（Shadowing）"><a href="#变量覆盖（Shadowing）" class="headerlink" title="变量覆盖（Shadowing）"></a>变量覆盖（Shadowing）</h3><p>Rust 可以在同一个作用于中定义相同名称的变量，然后先定义的变量将无法在被访问到。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = x + <span class="hljs-number">1</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = x * <span class="hljs-number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>变量覆盖与可变变量不同，当无意中在未使用 <code>let</code> 关键字的情况下为变量赋值时将产生编译错误。并且使用变量覆盖时可以换一个新的类型。</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Rust 中所有的值都有类型，类型分为标量类型和复合类型。</p>
+<p>Rust 是一种静态类型语言，也就是说 Rust 必须在编译期知道所有变量的类型。通常编译器可以从值或者其用法推断出类型，但是当有多种可能的类型时，就需要显式声明变量的类型了。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> guess: <span class="hljs-built_in">u32</span> = <span class="hljs-string">"42"</span>.parse().expect(<span class="hljs-string">"Not a number!"</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="标量类型（Scalar-Type）"><a href="#标量类型（Scalar-Type）" class="headerlink" title="标量类型（Scalar Type）"></a>标量类型（Scalar Type）</h3><p>标量类型代表一个单独的值。Rust 有 4 种基础标量类型：整数、浮点数、布尔值、字符。</p>
+<h4 id="整数"><a href="#整数" class="headerlink" title="整数"></a>整数</h4><p>整数类型可以用于表示不含小数部分的数字。根据是否有符号以及存储空间大小区别，分为以下 12 种变种：</p>
+<table>
+<thead>
+<tr>
+<th>长度</th>
+<th>有符号</th>
+<th>无符号</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>8 位</td>
+<td><code>i8</code></td>
+<td><code>u8</code></td>
+</tr>
+<tr>
+<td>16 位</td>
+<td><code>i16</code></td>
+<td><code>u16</code></td>
+</tr>
+<tr>
+<td>32 位</td>
+<td><code>i32</code></td>
+<td><code>u32</code></td>
+</tr>
+<tr>
+<td>64 位</td>
+<td><code>i64</code></td>
+<td><code>u64</code></td>
+</tr>
+<tr>
+<td>128 位</td>
+<td><code>i128</code></td>
+<td><code>u128</code></td>
+</tr>
+<tr>
+<td>与当前运行环境的架构一致(32 位或 64 位)</td>
+<td><code>isize</code></td>
+<td><code>usize</code></td>
+</tr>
+</tbody></table>
+<p>所有的变种都具备有符号或无符号的约束，且有一个固定的存储空间大小。有符号的整数使用二进制补码的方式存储，有效值范围为 $-(2^{n-1})$ 到 $2^{n-1}-1$（$n$ 为存储空间位数）；无符号的整数有效值范围为 $0$ 到 $2^n-1$（$n$ 为存储空间位数）。</p>
+<p>以下字面量可以用于表示整数：</p>
+<table>
+<thead>
+<tr>
+<th>字面量类型</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>十进制</td>
+<td><code>1024</code></td>
+</tr>
+<tr>
+<td>十六进制</td>
+<td><code>0x400</code></td>
+</tr>
+<tr>
+<td>八进制</td>
+<td><code>0o2000</code></td>
+</tr>
+<tr>
+<td>二进制</td>
+<td><code>0b10000000000</code></td>
+</tr>
+<tr>
+<td>字节（仅用于 <code>u8</code> 类型）</td>
+<td><code>b&#39;A&#39;</code></td>
+</tr>
+</tbody></table>
+<p>除了字节字面量，其他的字面量都可以用整数变种名作为后缀，并且可以用<code>_</code>作为数字的分隔符，例如：<code>1024u16</code>，<code>1_024</code>。</p>
+<p>如果不确定要用哪一种整数变种，可以让 Rust 使用默认的<code>i32</code>，即使是在 64 位系统中，也通常是运算最快的。<code>isize</code> 和 <code>usize</code> 的主要使用场景是作为某种集合的索引类型。</p>
+<blockquote>
+<p>如果尝试给整数赋值超出有效范围的值，会导致整数溢出。Rust 在 debug 模式下溢出会崩溃，release 模式下溢出则不会产生崩溃，但是可能会与预期值不一致。</p>
+</blockquote>
+<h4 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h4><p>Rust 的浮点数分为两种：<code>f32</code> 和 <code>f64</code>。和整数一样，这两种类型仅在存储空间大小上有区别。默认的浮点数类型为 <code>f64</code>，因为在现代 CPU 中，32 位浮点数与 64 位浮点数运算速度相差无几，而 64 位可以提供更高的精度。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = <span class="hljs-number">2.0</span>; <span class="hljs-comment">// f64</span></span><br><span class="line">  <span class="hljs-keyword">let</span> y: <span class="hljs-built_in">f32</span> = <span class="hljs-number">3.0</span>; <span class="hljs-comment">// f32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>浮点数使用 IEEE-754 标准来表示，<code>f32</code> 为单精度浮点数，<code>f64</code> 为双精度浮点数。</p>
+<h4 id="数学运算"><a href="#数学运算" class="headerlink" title="数学运算"></a>数学运算</h4><p>Rust 为所有的数字类型提供数学基本运算：加减乘除与取余。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> sum = <span class="hljs-number">5</span> + <span class="hljs-number">10</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> difference = <span class="hljs-number">95.5</span> - <span class="hljs-number">4.3</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> product = <span class="hljs-number">4</span> * <span class="hljs-number">30</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> quotient = <span class="hljs-number">56.7</span> / <span class="hljs-number">32.2</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> remainder = <span class="hljs-number">43</span> % <span class="hljs-number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h4><p>与大部分其他语言一样，Rust 的布尔值类型有两个可能值：<code>true</code> 和 <code>false</code>。布尔值使用 1 个字节的存储空间。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> t = <span class="hljs-literal">true</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> f: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>布尔值主要用于条件判断，比如 <code>if</code> 表达式。</p>
+<h4 id="字符类型"><a href="#字符类型" class="headerlink" title="字符类型"></a>字符类型</h4><p>Rust 中的 <code>char</code> 类型是最基本的文本类型，字符字面量使用单引号（字符串则是双引号）：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> c = <span class="hljs-string">'z'</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> z = <span class="hljs-string">'ℤ'</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> heart_eyed_cat = '😻';</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Rust 的 <code>char</code> 类型使用 4 个字节存储，表示一个 Unicode 标量（UTF-32）。在 Rust 中字母变种、中文、日文、韩文、Emoji，零宽度空格都是一个有效的 <code>char</code> 值。Unicode 标量的有效范围为 <code>U+0000</code> 到 <code>U+D7FF</code> 和 <code>U+E000</code> 到 <code>U+10FFFF</code>。然而 Unicode 中并没有字符的概念，所以一般所说的字符可能和 <code>char</code> 会有出入。</p>
+<h3 id="复合类型（Compound-Type）"><a href="#复合类型（Compound-Type）" class="headerlink" title="复合类型（Compound Type）"></a>复合类型（Compound Type）</h3><p>复合类型用于将多个值组合成一个类型。Rust 有两个基本复合类型：元组（tuple）与数组（array）</p>
+<h4 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h4><p>元组用于将多个值组合成一个类型，这些值可以是不同的类型。Rust 是一种静态类型语言，每个元组类型拥有固定个数的值，并且对应位置的值的类型也是确定的。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> tup: (<span class="hljs-built_in">i32</span>, <span class="hljs-built_in">f64</span>, <span class="hljs-built_in">u8</span>) = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>);</span><br><span class="line">  <span class="hljs-keyword">let</span> tup = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>);</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> (x, y, z) = tup; <span class="hljs-comment">// 通过解构取出元组中的值</span></span><br><span class="line">  <span class="hljs-keyword">let</span> x2 = tup.<span class="hljs-number">0</span>; <span class="hljs-comment">// 直接按位置取出元组中的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h4><p>与元组不同，数组的所有元素必须是同一种类型。与其他的一些语言不同，Rust 中的数组是固定长度的。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> arr = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>];</span><br><span class="line">  <span class="hljs-keyword">let</span> arr: [<span class="hljs-built_in">i32</span>; <span class="hljs-number">5</span>] = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]; <span class="hljs-comment">// 数组的类型语法：[type; length]</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 另一种数组字面量，用于创建包含重复元素的数组</span></span><br><span class="line">  <span class="hljs-keyword">let</span> arr: [<span class="hljs-built_in">i32</span>; <span class="hljs-number">5</span>] = [<span class="hljs-number">1</span>; <span class="hljs-number">5</span>]; <span class="hljs-comment">// 等同于 [1, 1, 1, 1, 1]</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> first = arr[<span class="hljs-number">0</span>]; <span class="hljs-comment">// 使用下标访问数组元素</span></span><br><span class="line">  <span class="hljs-keyword">let</span> second = arr[<span class="hljs-number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>数组下标越界会产生编译错误。</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Rust 中用 <code>fn</code> 关键字定义函数。最重要的函数是 <code>main</code> 函数，是整个程序的入口。</p>
+<p>Rust 中函数和变量使用小写下划线的命名风格。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"Hello, world!"</span>);</span><br><span class="line">  another_function();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">another_function</span></span>() &#123;</span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"Another function."</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Rust 中的函数调用不关心函数定义的顺序。</p>
+<h3 id="函数的参数"><a href="#函数的参数" class="headerlink" title="函数的参数"></a>函数的参数</h3><p>函数的参数必须显式指定类型。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  another_function(<span class="hljs-number">5</span>, <span class="hljs-number">6</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">another_function</span></span>(x: <span class="hljs-built_in">i32</span>, y: <span class="hljs-built_in">i32</span>) &#123;</span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"The value of x is: &#123;&#125;"</span>, x);</span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"The value of y is: &#123;&#125;"</span>, y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="函数体，语句与表达式"><a href="#函数体，语句与表达式" class="headerlink" title="函数体，语句与表达式"></a>函数体，语句与表达式</h3><p>函数体由一系列的语句构成，可以由一个表达式结尾。Rust 是一种基于表达式的语言，能区分语句与表达式的区别尤为重要。</p>
+<p>语句指的是执行某些动作的操作，并不返回值；而表达式会有一个值作为结果。</p>
+<p>参数定义和函数体都是语句的一种。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123; <span class="hljs-comment">// fn statement</span></span><br><span class="line">  <span class="hljs-keyword">let</span> y = <span class="hljs-number">6</span>; <span class="hljs-comment">// let statement</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与其他语言不同，Rust 中赋值语句不产生结果，因此诸如 <code>x = y = 5</code> 的写法在 Rust 中行不通。</p>
+<p>表达式可以是语句的一部分。</p>
+<p>函数调用、宏调用、块都是表达式的一种。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> y = &#123; <span class="hljs-comment">// block expression</span></span><br><span class="line">    <span class="hljs-keyword">let</span> x = <span class="hljs-number">3</span>;</span><br><span class="line">    x + <span class="hljs-number">1</span> <span class="hljs-comment">// 结尾表达式，如果加`;`会变成语句</span></span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"The value of y is: &#123;&#125;"</span>, y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>块可以创建新的作用域，块表达式的值是其结尾表达式的值。</p>
+<h3 id="函数的返回值"><a href="#函数的返回值" class="headerlink" title="函数的返回值"></a>函数的返回值</h3><p>函数可以给调用自己的地方返回一个值，返回值没有名称，但是需要定义类型。在 Rust 中，函数的返回值是作为函数体的块的值（即结尾表达式的值），但是可以用 <code>return</code> 关键字提前返回结果。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">five</span></span>() -&gt; <span class="hljs-built_in">i32</span> &#123;</span><br><span class="line">  <span class="hljs-number">5</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = five();</span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"The value of x is: &#123;&#125;"</span>, x);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><p>和其他一些语言一样，Rust 使用 <code>// some words</code>、<code>/* some words */</code> 表示注释，还有一种文档注释，之后再说。</p>
+<h2 id="控制流"><a href="#控制流" class="headerlink" title="控制流"></a>控制流</h2><h3 id="if-表达式"><a href="#if-表达式" class="headerlink" title="if 表达式"></a><code>if</code> 表达式</h3><figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> number = <span class="hljs-number">3</span>;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> number &lt; <span class="hljs-number">5</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"condition was true"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> number &lt; <span class="hljs-number">5</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"condition was true"</span>);</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"condition was false"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">if</span> number % <span class="hljs-number">4</span> == <span class="hljs-number">0</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"number is divisible by 4"</span>);</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> number % <span class="hljs-number">3</span> == <span class="hljs-number">0</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"number is divisible by 3"</span>);</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> number % <span class="hljs-number">2</span> == <span class="hljs-number">0</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"number is divisible by 2"</span>);</span><br><span class="line">  &#125; <span class="hljs-keyword">else</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"number is not divisible by 4, 3, or 2"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> number_at_least_5 = <span class="hljs-keyword">if</span> number &gt; <span class="hljs-number">5</span> &#123; <span class="hljs-number">5</span> &#125; <span class="hljs-keyword">else</span> &#123; number &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>if</code> 表达式的值为执行的那个块的值，<code>if</code> 语句的所有块的值类型必须一致。</p>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><p>Rust 有三种循环：<code>loop</code>、<code>while</code>、<code>for</code>。</p>
+<h4 id="loop-循环"><a href="#loop-循环" class="headerlink" title="loop 循环"></a><code>loop</code> 循环</h4><p><code>loop</code> 关键字会循环执行一个块，直到使用 <code>break</code> 关键字中止循环。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">loop</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"again!"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="loop-的返回值"><a href="#loop-的返回值" class="headerlink" title="loop 的返回值"></a><code>loop</code> 的返回值</h5><p>使用 <code>break</code> 关键字中止循环，<code>break</code> 后面接的值就是 <code>loop</code> 的值。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> counter = <span class="hljs-number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> result = <span class="hljs-keyword">loop</span> &#123;</span><br><span class="line">    counter += <span class="hljs-number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> counter == <span class="hljs-number">10</span> &#123;</span><br><span class="line">      <span class="hljs-keyword">break</span> counter * <span class="hljs-number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"The result is &#123;&#125;"</span>, result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="while-循环"><a href="#while-循环" class="headerlink" title="while 循环"></a><code>while</code> 循环</h4><p><code>while</code> 关键字会重复检查条件，当条件满足时，执行作为循环体的块，否则中止循环。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> a = [<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>, <span class="hljs-number">50</span>];</span><br><span class="line">  <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> index = <span class="hljs-number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">while</span> index &lt; <span class="hljs-number">5</span> &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"the value is: &#123;&#125;"</span>, a[index]);</span><br><span class="line"></span><br><span class="line">    index += <span class="hljs-number">1</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>while</code> 循环没有返回值。</p>
+<h4 id="for-循环"><a href="#for-循环" class="headerlink" title="for 循环"></a><code>for</code> 循环</h4><p><code>for</code> 关键字会遍历一个集合</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> a = [<span class="hljs-number">10</span>, <span class="hljs-number">20</span>, <span class="hljs-number">30</span>, <span class="hljs-number">40</span>, <span class="hljs-number">50</span>];</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> element <span class="hljs-keyword">in</span> a.iter() &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"the value is: &#123;&#125;"</span>, element);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">for</span> number <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>..<span class="hljs-number">4</span>).rev() &#123;</span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"&#123;&#125;!"</span>, number);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"LIFTOFF!!!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>for</code> 循环没有返回值。</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Rust/">Rust</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2019/06/21/nodejs-understanding-gc/">
+                <span class="level-item">理解 Node.js 中的垃圾回收机制</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="image container is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://www.gravatar.com/avatar/968c826fa8b03009fa3d708f0bd041e9?s=128" alt="Linkeo">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        Linkeo
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Node.js Developer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Hangzhou, China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        11
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        4
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        10
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/linkeo">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/linkeo">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#变量">
+        <span class="has-mr-6">1</span>
+        <span>变量</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#常量">
+        <span class="has-mr-6">1.1</span>
+        <span>常量</span>
+        </a></li><li>
+        <a class="is-flex" href="#变量覆盖（Shadowing）">
+        <span class="has-mr-6">1.2</span>
+        <span>变量覆盖（Shadowing）</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#数据类型">
+        <span class="has-mr-6">2</span>
+        <span>数据类型</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#标量类型（Scalar-Type）">
+        <span class="has-mr-6">2.1</span>
+        <span>标量类型（Scalar Type）</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#整数">
+        <span class="has-mr-6">2.1.1</span>
+        <span>整数</span>
+        </a></li><li>
+        <a class="is-flex" href="#浮点数">
+        <span class="has-mr-6">2.1.2</span>
+        <span>浮点数</span>
+        </a></li><li>
+        <a class="is-flex" href="#数学运算">
+        <span class="has-mr-6">2.1.3</span>
+        <span>数学运算</span>
+        </a></li><li>
+        <a class="is-flex" href="#布尔类型">
+        <span class="has-mr-6">2.1.4</span>
+        <span>布尔类型</span>
+        </a></li><li>
+        <a class="is-flex" href="#字符类型">
+        <span class="has-mr-6">2.1.5</span>
+        <span>字符类型</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#复合类型（Compound-Type）">
+        <span class="has-mr-6">2.2</span>
+        <span>复合类型（Compound Type）</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#元组">
+        <span class="has-mr-6">2.2.1</span>
+        <span>元组</span>
+        </a></li><li>
+        <a class="is-flex" href="#数组">
+        <span class="has-mr-6">2.2.2</span>
+        <span>数组</span>
+        </a></li></ul></li></ul></li><li>
+        <a class="is-flex" href="#函数">
+        <span class="has-mr-6">3</span>
+        <span>函数</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#函数的参数">
+        <span class="has-mr-6">3.1</span>
+        <span>函数的参数</span>
+        </a></li><li>
+        <a class="is-flex" href="#函数体，语句与表达式">
+        <span class="has-mr-6">3.2</span>
+        <span>函数体，语句与表达式</span>
+        </a></li><li>
+        <a class="is-flex" href="#函数的返回值">
+        <span class="has-mr-6">3.3</span>
+        <span>函数的返回值</span>
+        </a></li><li>
+        <a class="is-flex" href="#注释">
+        <span class="has-mr-6">3.4</span>
+        <span>注释</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#控制流">
+        <span class="has-mr-6">4</span>
+        <span>控制流</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#if-表达式">
+        <span class="has-mr-6">4.1</span>
+        <span>if 表达式</span>
+        </a></li><li>
+        <a class="is-flex" href="#循环">
+        <span class="has-mr-6">4.2</span>
+        <span>循环</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#loop-循环">
+        <span class="has-mr-6">4.2.1</span>
+        <span>loop 循环</span>
+        </a></li><li>
+        <a class="is-flex" href="#while-循环">
+        <span class="has-mr-6">4.2.2</span>
+        <span>while 循环</span>
+        </a></li><li>
+        <a class="is-flex" href="#for-循环">
+        <span class="has-mr-6">4.2.3</span>
+        <span>for 循环</span>
+        </a></li></ul></li></ul></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://hexo.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hexo.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://kiruya.github.io/five-minutes-business-school/#/000" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Business School</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">kiruya.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.invokerll.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Invokerll&#39;s Blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.invokerll.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Algorithm/" style="font-size: 13.33px;">Algorithm</a> <a href="/tags/Event/" style="font-size: 10px;">Event</a> <a href="/tags/Fibonnaci/" style="font-size: 10px;">Fibonnaci</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Node-js/" style="font-size: 16.67px;">Node.js</a> <a href="/tags/OOJS/" style="font-size: 13.33px;">OOJS</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/Rust/" style="font-size: 10px;">Rust</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-10-09T03:46:04.000Z">2020-10-09</time></div>
+                    <a href="/2020/10/09/learning-rust-1/" class="has-link-black-ter is-size-6">Rust学习笔记1</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-21T06:15:21.000Z">2019-06-21</time></div>
+                    <a href="/2019/06/21/nodejs-understanding-gc/" class="has-link-black-ter is-size-6">理解 Node.js 中的垃圾回收机制</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-12T13:36:07.000Z">2019-06-12</time></div>
+                    <a href="/2019/06/12/js-inheritance/" class="has-link-black-ter is-size-6">JavaScript 中的继承与原型链</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-11T14:22:09.000Z">2019-06-11</time></div>
+                    <a href="/2019/06/11/binets-fibonacci/" class="has-link-black-ter is-size-6">用矩阵求第 N 个斐波那契数</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T01:48:48.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/algorithm-basis/" class="has-link-black-ter is-size-6">算法基础思想</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Algorithm/">
+            <span class="level-start">
+                <span class="level-item">Algorithm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Rust/">
+            <span class="level-start">
+                <span class="level-item">Rust</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Algorithm/">
+                        <span class="tag">Algorithm</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Event/">
+                        <span class="tag">Event</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Fibonnaci/">
+                        <span class="tag">Fibonnaci</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Matrix/">
+                        <span class="tag">Matrix</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Performance/">
+                        <span class="tag">Performance</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Promise/">
+                        <span class="tag">Promise</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Rust/">
+                        <span class="tag">Rust</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-10-09T03:46:04.000Z">2020-10-09</time></div>
+                    <a href="/2020/10/09/learning-rust-1/" class="has-link-black-ter is-size-6">Rust学习笔记1</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-21T06:15:21.000Z">2019-06-21</time></div>
+                    <a href="/2019/06/21/nodejs-understanding-gc/" class="has-link-black-ter is-size-6">理解 Node.js 中的垃圾回收机制</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Node-js/">Node.js</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-12T13:36:07.000Z">2019-06-12</time></div>
+                    <a href="/2019/06/12/js-inheritance/" class="has-link-black-ter is-size-6">JavaScript 中的继承与原型链</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-11T14:22:09.000Z">2019-06-11</time></div>
+                    <a href="/2019/06/11/binets-fibonacci/" class="has-link-black-ter is-size-6">用矩阵求第 N 个斐波那契数</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T01:48:48.000Z">2019-06-06</time></div>
+                    <a href="/2019/06/06/algorithm-basis/" class="has-link-black-ter is-size-6">算法基础思想</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Algorithm/">
+            <span class="level-start">
+                <span class="level-item">Algorithm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Rust/">
+            <span class="level-start">
+                <span class="level-item">Rust</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">1</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">1</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Algorithm/">
+                        <span class="tag">Algorithm</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Event/">
+                        <span class="tag">Event</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Fibonnaci/">
+                        <span class="tag">Fibonnaci</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Matrix/">
+                        <span class="tag">Matrix</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Performance/">
+                        <span class="tag">Performance</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Promise/">
+                        <span class="tag">Promise</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Rust/">
+                        <span class="tag">Rust</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Rust学习笔记1" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 Linkeo&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                <br>
+                <span id="busuanzi_container_site_uv">
+                共<span id="busuanzi_value_site_uv">0</span>个访客
+                </span>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download Icarus on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fas fa-palette"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>
