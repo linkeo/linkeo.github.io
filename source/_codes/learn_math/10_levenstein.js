@@ -25,10 +25,15 @@ function levenstein(a, b) {
     }
   }
   console.log(
-    d.map(dr => dr.map(dc => String(dc).padStart(w)).join(' ')).join('\n')
+    d.map(dr => dr.map(dc => String(dc).padStart(w)).join(" ")).join("\n")
   );
   return d[ca.length][cb.length];
 }
 
-const distance = levenstein('linkeo@sohu.com', 'linkang@innobuddy.com');
+const distance = levenstein("linkeo@sohu.com", "linkang@innobuddy.com");
 console.log(distance);
+const distanceArray = levenstein(
+  ["linkeo", "@", "sohu", ".com"],
+  ["linkang", "@", "innobuddy", ".com"]
+);
+console.log(distanceArray);
