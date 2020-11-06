@@ -2,7 +2,7 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
-<title>Rust学习笔记1 - 星空博客</title>
+<title>Rust学习笔记1 - 基础 - 星空博客</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
@@ -10,14 +10,14 @@
     <meta name="description" content="本文是 Rust 学习笔记系列第一篇，参考 Rust 指南的第 2 到 3 章，涉及变量、数据类型、函数、注释、控制流。">
 <meta name="keywords" content="Rust">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Rust学习笔记1">
+<meta property="og:title" content="Rust学习笔记1 - 基础">
 <meta property="og:url" content="https://blog.linkeo.me/2020/10/09/learning-rust-1/index.html">
 <meta property="og:site_name" content="星空博客">
 <meta property="og:description" content="本文是 Rust 学习笔记系列第一篇，参考 Rust 指南的第 2 到 3 章，涉及变量、数据类型、函数、注释、控制流。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-10-26T10:33:40.393Z">
+<meta property="og:updated_time" content="2020-11-06T08:45:10.874Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Rust学习笔记1">
+<meta name="twitter:title" content="Rust学习笔记1 - 基础">
 <meta name="twitter:description" content="本文是 Rust 学习笔记系列第一篇，参考 Rust 指南的第 2 到 3 章，涉及变量、数据类型、函数、注释、控制流。">
 
 
@@ -94,7 +94,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.png" alt="Rust学习笔记1" height="28">
+                <img src="/images/logo.png" alt="Rust学习笔记1 - 基础" height="28">
             
             </a>
         </div>
@@ -157,7 +157,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    17 分钟 读完 (大约 2493 个字)
+                    17 分钟 读完 (大约 2477 个字)
                 </span>
                 
                 
@@ -171,7 +171,7 @@
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                Rust学习笔记1
+                Rust学习笔记1 - 基础
             
         </h1>
         <div class="content">
@@ -180,7 +180,7 @@
 
 <h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>Rust 中用 <code>let</code> 关键字定义变量，变量默认都是不可变的，用 <code>let mut</code> 定义可变的变量。（可变变量必须显式使用 <code>mut</code> 声明，这是 Rust 从安全方面的考虑）</p>
 <p>不可变的变量一旦初始化就不能再被改变。</p>
-<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> foo = <span class="hljs-number">5</span>; <span class="hljs-comment">// 不可变</span></span><br><span class="line">  <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> bar = <span class="hljs-number">5</span>; <span class="hljs-comment">// 可变</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> x;</span><br><span class="line">  x = <span class="hljs-number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> foo = <span class="hljs-number">5</span>; <span class="hljs-comment">// 不可变</span></span><br><span class="line"><span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> bar = <span class="hljs-number">5</span>; <span class="hljs-comment">// 可变</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">let</span> x;</span><br><span class="line">x = <span class="hljs-number">5</span>;</span><br></pre></td></tr></table></figure>
 
 <h3 id="常量"><a href="#常量" class="headerlink" title="常量"></a>常量</h3><p>和不可变变量类似，常量也是将一个不可变的值绑定到标识符。</p>
 <p>常量用 <code>const</code> 关键字定义，无法用 <code>mut</code> 将常量定义为可变，且常量的类型必须显式指定。</p>
@@ -191,7 +191,7 @@
 </blockquote>
 <p>常量在程序执行过程中一直存在，在其定义的作用域中有效。</p>
 <h3 id="变量覆盖（Shadowing）"><a href="#变量覆盖（Shadowing）" class="headerlink" title="变量覆盖（Shadowing）"></a>变量覆盖（Shadowing）</h3><p>Rust 可以在同一个作用于中定义相同名称的变量，然后先定义的变量将无法在被访问到。</p>
-<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = x + <span class="hljs-number">1</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = x * <span class="hljs-number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> x = <span class="hljs-number">5</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> x = x + <span class="hljs-number">1</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> x = x * <span class="hljs-number">2</span>;</span><br></pre></td></tr></table></figure>
 
 <p>变量覆盖与可变变量不同，当无意中在未使用 <code>let</code> 关键字的情况下为变量赋值时将产生编译错误。并且使用变量覆盖时可以换一个新的类型。</p>
 <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>Rust 中所有的值都有类型，类型分为标量类型和复合类型。</p>
@@ -275,26 +275,26 @@
 <p>如果尝试给整数赋值超出有效范围的值，会导致整数溢出。Rust 在 debug 模式下溢出会崩溃，release 模式下溢出则不会产生崩溃，但是可能会与预期值不一致。</p>
 </blockquote>
 <h4 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h4><p>Rust 的浮点数分为两种：<code>f32</code> 和 <code>f64</code>。和整数一样，这两种类型仅在存储空间大小上有区别。默认的浮点数类型为 <code>f64</code>，因为在现代 CPU 中，32 位浮点数与 64 位浮点数运算速度相差无几，而 64 位可以提供更高的精度。</p>
-<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> x = <span class="hljs-number">2.0</span>; <span class="hljs-comment">// f64</span></span><br><span class="line">  <span class="hljs-keyword">let</span> y: <span class="hljs-built_in">f32</span> = <span class="hljs-number">3.0</span>; <span class="hljs-comment">// f32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> x = <span class="hljs-number">2.0</span>; <span class="hljs-comment">// f64</span></span><br><span class="line"><span class="hljs-keyword">let</span> y: <span class="hljs-built_in">f32</span> = <span class="hljs-number">3.0</span>; <span class="hljs-comment">// f32</span></span><br></pre></td></tr></table></figure>
 
 <p>浮点数使用 IEEE-754 标准来表示，<code>f32</code> 为单精度浮点数，<code>f64</code> 为双精度浮点数。</p>
 <h4 id="数学运算"><a href="#数学运算" class="headerlink" title="数学运算"></a>数学运算</h4><p>Rust 为所有的数字类型提供数学基本运算：加减乘除与取余。</p>
-<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> sum = <span class="hljs-number">5</span> + <span class="hljs-number">10</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> difference = <span class="hljs-number">95.5</span> - <span class="hljs-number">4.3</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> product = <span class="hljs-number">4</span> * <span class="hljs-number">30</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> quotient = <span class="hljs-number">56.7</span> / <span class="hljs-number">32.2</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> remainder = <span class="hljs-number">43</span> % <span class="hljs-number">5</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> sum = <span class="hljs-number">5</span> + <span class="hljs-number">10</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> difference = <span class="hljs-number">95.5</span> - <span class="hljs-number">4.3</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> product = <span class="hljs-number">4</span> * <span class="hljs-number">30</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> quotient = <span class="hljs-number">56.7</span> / <span class="hljs-number">32.2</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> remainder = <span class="hljs-number">43</span> % <span class="hljs-number">5</span>;</span><br></pre></td></tr></table></figure>
 
 <h4 id="布尔类型"><a href="#布尔类型" class="headerlink" title="布尔类型"></a>布尔类型</h4><p>与大部分其他语言一样，Rust 的布尔值类型有两个可能值：<code>true</code> 和 <code>false</code>。布尔值使用 1 个字节的存储空间。</p>
-<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> t = <span class="hljs-literal">true</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> f: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> t = <span class="hljs-literal">true</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> f: <span class="hljs-built_in">bool</span> = <span class="hljs-literal">false</span>;</span><br></pre></td></tr></table></figure>
 
 <p>布尔值主要用于条件判断，比如 <code>if</code> 表达式。</p>
 <h4 id="字符类型"><a href="#字符类型" class="headerlink" title="字符类型"></a>字符类型</h4><p>Rust 中的 <code>char</code> 类型是最基本的文本类型，字符字面量使用单引号（字符串则是双引号）：</p>
-<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> c = <span class="hljs-string">'z'</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> z = <span class="hljs-string">'ℤ'</span>;</span><br><span class="line">  <span class="hljs-keyword">let</span> heart_eyed_cat = '😻';</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> c = <span class="hljs-string">'z'</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> z = <span class="hljs-string">'ℤ'</span>;</span><br><span class="line"><span class="hljs-keyword">let</span> heart_eyed_cat = '😻';</span><br></pre></td></tr></table></figure>
 
 <p>Rust 的 <code>char</code> 类型使用 4 个字节存储，表示一个 Unicode 标量（UTF-32）。在 Rust 中字母变种、中文、日文、韩文、Emoji，零宽度空格都是一个有效的 <code>char</code> 值。Unicode 标量的有效范围为 <code>U+0000</code> 到 <code>U+D7FF</code> 和 <code>U+E000</code> 到 <code>U+10FFFF</code>。然而 Unicode 中并没有字符的概念，所以一般所说的字符可能和 <code>char</code> 会有出入。</p>
 <h3 id="复合类型（Compound-Type）"><a href="#复合类型（Compound-Type）" class="headerlink" title="复合类型（Compound Type）"></a>复合类型（Compound Type）</h3><p>复合类型用于将多个值组合成一个类型。Rust 有两个基本复合类型：元组（tuple）与数组（array）</p>
 <h4 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h4><p>元组用于将多个值组合成一个类型，这些值可以是不同的类型。Rust 是一种静态类型语言，每个元组类型拥有固定个数的值，并且对应位置的值的类型也是确定的。</p>
-<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> tup: (<span class="hljs-built_in">i32</span>, <span class="hljs-built_in">f64</span>, <span class="hljs-built_in">u8</span>) = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>);</span><br><span class="line">  <span class="hljs-keyword">let</span> tup = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>);</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> (x, y, z) = tup; <span class="hljs-comment">// 通过解构取出元组中的值</span></span><br><span class="line">  <span class="hljs-keyword">let</span> x2 = tup.<span class="hljs-number">0</span>; <span class="hljs-comment">// 直接按位置取出元组中的值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> tup: (<span class="hljs-built_in">i32</span>, <span class="hljs-built_in">f64</span>, <span class="hljs-built_in">u8</span>) = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>);</span><br><span class="line"><span class="hljs-keyword">let</span> tup = (<span class="hljs-number">500</span>, <span class="hljs-number">6.4</span>, <span class="hljs-number">1</span>);</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">let</span> (x, y, z) = tup; <span class="hljs-comment">// 通过解构取出元组中的值</span></span><br><span class="line"><span class="hljs-keyword">let</span> x2 = tup.<span class="hljs-number">0</span>; <span class="hljs-comment">// 直接按位置取出元组中的值</span></span><br></pre></td></tr></table></figure>
 
 <h4 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h4><p>与元组不同，数组的所有元素必须是同一种类型。与其他的一些语言不同，Rust 中的数组是固定长度的。</p>
-<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> arr = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>];</span><br><span class="line">  <span class="hljs-keyword">let</span> arr: [<span class="hljs-built_in">i32</span>; <span class="hljs-number">5</span>] = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]; <span class="hljs-comment">// 数组的类型语法：[type; length]</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 另一种数组字面量，用于创建包含重复元素的数组</span></span><br><span class="line">  <span class="hljs-keyword">let</span> arr: [<span class="hljs-built_in">i32</span>; <span class="hljs-number">5</span>] = [<span class="hljs-number">1</span>; <span class="hljs-number">5</span>]; <span class="hljs-comment">// 等同于 [1, 1, 1, 1, 1]</span></span><br><span class="line"></span><br><span class="line">  <span class="hljs-keyword">let</span> first = arr[<span class="hljs-number">0</span>]; <span class="hljs-comment">// 使用下标访问数组元素</span></span><br><span class="line">  <span class="hljs-keyword">let</span> second = arr[<span class="hljs-number">1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">let</span> arr = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>];</span><br><span class="line"><span class="hljs-keyword">let</span> arr: [<span class="hljs-built_in">i32</span>; <span class="hljs-number">5</span>] = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>]; <span class="hljs-comment">// 数组的类型语法：[type; length]</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 另一种数组字面量，用于创建包含重复元素的数组</span></span><br><span class="line"><span class="hljs-keyword">let</span> arr: [<span class="hljs-built_in">i32</span>; <span class="hljs-number">5</span>] = [<span class="hljs-number">1</span>; <span class="hljs-number">5</span>]; <span class="hljs-comment">// 等同于 [1, 1, 1, 1, 1]</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">let</span> first = arr[<span class="hljs-number">0</span>]; <span class="hljs-comment">// 使用下标访问数组元素</span></span><br><span class="line"><span class="hljs-keyword">let</span> second = arr[<span class="hljs-number">1</span>];</span><br></pre></td></tr></table></figure>
 
 <p>数组下标越界会产生编译错误。</p>
 <h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>Rust 中用 <code>fn</code> 关键字定义函数。最重要的函数是 <code>main</code> 函数，是整个程序的入口。</p>
@@ -362,6 +362,13 @@
 <div class="card card-transparent">
     <div class="level post-navigation is-flex-wrap is-mobile">
         
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/10/27/learning-rust-2/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">Rust学习笔记2 - 所有权</span>
+            </a>
+        </div>
+        
         
         <div class="level-end">
             <a class="level level-item has-link-grey  article-nav-next" href="/2019/06/21/nodejs-understanding-gc/">
@@ -419,7 +426,7 @@
                         文章
                     </p>
                     <p class="title has-text-weight-normal">
-                        11
+                        12
                     </p>
                 </div>
             </div>
@@ -628,7 +635,7 @@
         <h3 class="menu-label">
             标签云
         </h3>
-        <a href="/tags/Algorithm/" style="font-size: 13.33px;">Algorithm</a> <a href="/tags/Event/" style="font-size: 10px;">Event</a> <a href="/tags/Fibonnaci/" style="font-size: 10px;">Fibonnaci</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Node-js/" style="font-size: 16.67px;">Node.js</a> <a href="/tags/OOJS/" style="font-size: 13.33px;">OOJS</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/Rust/" style="font-size: 10px;">Rust</a>
+        <a href="/tags/Algorithm/" style="font-size: 13.33px;">Algorithm</a> <a href="/tags/Event/" style="font-size: 10px;">Event</a> <a href="/tags/Fibonnaci/" style="font-size: 10px;">Fibonnaci</a> <a href="/tags/JavaScript/" style="font-size: 20px;">JavaScript</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Node-js/" style="font-size: 16.67px;">Node.js</a> <a href="/tags/OOJS/" style="font-size: 13.33px;">OOJS</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/Rust/" style="font-size: 13.33px;">Rust</a>
     </div>
 </div>
 
@@ -647,8 +654,21 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-10-27T07:41:12.000Z">2020-10-27</time></div>
+                    <a href="/2020/10/27/learning-rust-2/" class="has-link-black-ter is-size-6">Rust学习笔记2 - 所有权</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-10-09T03:46:04.000Z">2020-10-09</time></div>
-                    <a href="/2020/10/09/learning-rust-1/" class="has-link-black-ter is-size-6">Rust学习笔记1</a>
+                    <a href="/2020/10/09/learning-rust-1/" class="has-link-black-ter is-size-6">Rust学习笔记1 - 基础</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
                     </p>
@@ -688,19 +708,6 @@
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-11T14:22:09.000Z">2019-06-11</time></div>
                     <a href="/2019/06/11/binets-fibonacci/" class="has-link-black-ter is-size-6">用矩阵求第 N 个斐波那契数</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T01:48:48.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/algorithm-basis/" class="has-link-black-ter is-size-6">算法基础思想</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
                     </p>
@@ -750,7 +757,7 @@
                 <span class="level-item">Rust</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">1</span>
+                <span class="level-item tag">2</span>
             </span>
         </a></li>
             </ul>
@@ -772,7 +779,7 @@
                     <span class="level-item">十月 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -878,7 +885,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Rust/">
                         <span class="tag">Rust</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -909,8 +916,21 @@
             
             <div class="media-content">
                 <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-10-27T07:41:12.000Z">2020-10-27</time></div>
+                    <a href="/2020/10/27/learning-rust-2/" class="has-link-black-ter is-size-6">Rust学习笔记2 - 所有权</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-10-09T03:46:04.000Z">2020-10-09</time></div>
-                    <a href="/2020/10/09/learning-rust-1/" class="has-link-black-ter is-size-6">Rust学习笔记1</a>
+                    <a href="/2020/10/09/learning-rust-1/" class="has-link-black-ter is-size-6">Rust学习笔记1 - 基础</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
                     </p>
@@ -950,19 +970,6 @@
                 <div class="content">
                     <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-11T14:22:09.000Z">2019-06-11</time></div>
                     <a href="/2019/06/11/binets-fibonacci/" class="has-link-black-ter is-size-6">用矩阵求第 N 个斐波那契数</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2019-06-06T01:48:48.000Z">2019-06-06</time></div>
-                    <a href="/2019/06/06/algorithm-basis/" class="has-link-black-ter is-size-6">算法基础思想</a>
                     <p class="is-size-7 is-uppercase">
                         <a class="has-link-grey -link" href="/categories/Algorithm/">Algorithm</a>
                     </p>
@@ -1012,7 +1019,7 @@
                 <span class="level-item">Rust</span>
             </span>
             <span class="level-end">
-                <span class="level-item tag">1</span>
+                <span class="level-item tag">2</span>
             </span>
         </a></li>
             </ul>
@@ -1034,7 +1041,7 @@
                     <span class="level-item">十月 2020</span>
                 </span>
                 <span class="level-end">
-                    <span class="level-item tag">1</span>
+                    <span class="level-item tag">2</span>
                 </span>
             </a>
         </li>
@@ -1140,7 +1147,7 @@
                 <div class="control">
                     <a class="tags has-addons" href="/tags/Rust/">
                         <span class="tag">Rust</span>
-                        <span class="tag is-grey">1</span>
+                        <span class="tag is-grey">2</span>
                     </a>
                 </div>
                 
@@ -1161,7 +1168,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.png" alt="Rust学习笔记1" height="28">
+                    <img src="/images/logo.png" alt="Rust学习笔记1 - 基础" height="28">
                 
                 </a>
                 <p class="is-size-7">
