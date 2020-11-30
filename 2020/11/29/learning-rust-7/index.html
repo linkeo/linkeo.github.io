@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+<title>Rust学习笔记7 - 错误处理 - 星空博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="本文是 Rust 学习笔记系列第七篇，参考 Rust 指南的第 9 章，主要讲错误处理，将涉及 panic! 和 Result&amp;lt;T, E&amp;gt;。">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust学习笔记7 - 错误处理">
+<meta property="og:url" content="https://blog.linkeo.me/2020/11/29/learning-rust-7/index.html">
+<meta property="og:site_name" content="星空博客">
+<meta property="og:description" content="本文是 Rust 学习笔记系列第七篇，参考 Rust 指南的第 9 章，主要讲错误处理，将涉及 panic! 和 Result&amp;lt;T, E&amp;gt;。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-11-29T15:45:58.121Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust学习笔记7 - 错误处理">
+<meta name="twitter:description" content="本文是 Rust 学习笔记系列第七篇，参考 Rust 指南的第 9 章，主要讲错误处理，将涉及 panic! 和 Result&amp;lt;T, E&amp;gt;。">
+
+
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="/icons/all.css">
+<link rel="stylesheet" href="/fonts/css.css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="Rust学习笔记7 - 错误处理" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Posts</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Repository" href="https://github.com/linkeo/linkeo.github.io">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-11-29T07:01:09.000Z">2020-11-29</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    22 分钟 读完 (大约 3356 个字)
+                </span>
+                
+                
+                <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
+                    <i class="far fa-eye"></i>
+                    <span id="busuanzi_value_page_pv">0</span>次访问
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Rust学习笔记7 - 错误处理
+            
+        </h1>
+        <div class="content">
+            <p>本文是 Rust 学习笔记系列第七篇，参考 Rust 指南的第 9 章，主要讲错误处理，将涉及 <code>panic!</code> 和 <code>Result&lt;T, E&gt;</code>。</p>
+<a id="more"></a>
+
+<p>Rust 对可靠性的保证也包括错误处理的部分。错误是在软件开发中无法避开的问题，Rust 提供了多种用于解决出错情况的特性。大部分情况下，Rust 会在编译时告知可能存在的问题，要求你在编译时就解决该问题。这些要求可以让你的程序变得更加健壮，因为它会确保你在发布代码之前可以发现问题并且采取合适的解决方法。</p>
+<p>Rust 将错误分为两类：可恢复的错误与不可恢复的错误。可恢复的错误指可以合理的告知用户并且要求重试的错误，比如找不到文件；不可恢复的错误是缺陷的同义词，比如尝试数组下标越界等。</p>
+<p>大部分语言不会区分这两者，通过异常（Exception）机制等方式提供统一的解决方法。但是 Rust 中没有实现异常，而是提供了 <code>Result&lt;T, E&gt;</code> 类型用于处理可恢复错误，用 <code>panic!</code> 宏来在遭遇不可恢复错误时，让程序中止。</p>
+<h2 id="不可恢复错误与-panic"><a href="#不可恢复错误与-panic" class="headerlink" title="不可恢复错误与 panic!"></a>不可恢复错误与 <code>panic!</code></h2><p>有些情况下，当代码出错时，开发者没法解决这些问题。Rust 提供 <code>panic!</code> 宏用于应对这种场景。当执行到 <code>panic!</code> 宏时，程序会打印错误信息，释放并清理所使用的内存，然后结束进程。通常发生在检测出某种缺陷，并且开发者并不明确如何去解决这个错误的时候。</p>
+<blockquote>
+<p>默认情况下，程序在 panic 时，会释放栈（按顺序弹出栈空间，并清理所使用的数据），但是这个过程也是一个不小的开销。另一种方法是就是立即中止执行。那些被程序所占用的内存需要由操作系统来清理。如果需要让编译出的二进制文件尽量小，可以在 <code>Cargo.toml</code> 的 <code>[profile]</code> 节中添加 <code>panic = &#39;abort&#39;</code> 配置，比如 ：</p>
+</blockquote>
+<figure class="highlight toml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-section">[profile.release]</span></span><br><span class="line"><span class="hljs-attr">panic</span> = <span class="hljs-string">'abort'</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以在程序中直接使用 <code>panic!</code>：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">  <span class="hljs-built_in">panic!</span>(<span class="hljs-string">"Oops!"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行代码会得到如下输出：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">$ cargo run</span><br><span class="line">   Compiling panic_example v0.1.0 (/projects/panic_example)</span><br><span class="line">    Finished dev [unoptimized + debuginfo] target(s) in 0.45s</span><br><span class="line">     Running `target/debug/panic_example`</span><br><span class="line">thread &apos;main&apos; panicked at &apos;Ooops!&apos;, src/main.rs:2:5</span><br><span class="line">note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看-panic-发生的调用栈"><a href="#查看-panic-发生的调用栈" class="headerlink" title="查看 panic! 发生的调用栈"></a>查看 <code>panic!</code> 发生的调用栈</h3><p>如果发生的 panic 并不是由我们自己编写的 <code>panic!</code> 触发的，我们就需要通过调用栈来查找到底是哪里导致的这个问题。</p>
+<figure class="highlight shell hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-meta">#</span><span class="hljs-bash"> 通过设置变量 RUST_BACKTRACE=1 可以让程序打印出详细的调用栈</span></span><br><span class="line">RUST_BACKTRACE=1 cargo run</span><br></pre></td></tr></table></figure>
+
+<h2 id="可恢复的错误与-Result"><a href="#可恢复的错误与-Result" class="headerlink" title="可恢复的错误与 Result"></a>可恢复的错误与 <code>Result</code></h2><p>大部分错误并没有严重到需要程序中止。有时候函数执行失败时，其原因可以轻易地理解并做出应对。比如当找不到文件时，可能会尝试创建一个文件，而不是让程序中止。</p>
+<p>Result 的定义如下：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">Result</span></span>&lt;T, E&gt; &#123;</span><br><span class="line">  <span class="hljs-comment">// 表示成功的结果，包括T类型的数据</span></span><br><span class="line">  <span class="hljs-literal">Ok</span>(T),</span><br><span class="line">  <span class="hljs-comment">// 表示失败的结果，包括E类型的原因</span></span><br><span class="line">  <span class="hljs-literal">Err</span>(E),</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们来试试文件读取的代码：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">    <span class="hljs-comment">// 这时候 f 是 Result 类型的</span></span><br><span class="line">    <span class="hljs-keyword">let</span> f = File::open(<span class="hljs-string">"hello.txt"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">let</span> f = <span class="hljs-keyword">match</span> f &#123;</span><br><span class="line">        <span class="hljs-comment">// 如果成功，将打开的文件赋值给新的变量 f</span></span><br><span class="line">        <span class="hljs-literal">Ok</span>(file) =&gt; file,</span><br><span class="line">        <span class="hljs-comment">// 如果失败，就直接中止程序</span></span><br><span class="line">        <span class="hljs-literal">Err</span>(error) =&gt; <span class="hljs-built_in">panic!</span>(<span class="hljs-string">"Cannot open the file: &#123;:?&#125;"</span>, error),</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="匹配不同错误类型"><a href="#匹配不同错误类型" class="headerlink" title="匹配不同错误类型"></a>匹配不同错误类型</h3><p><code>File::open</code> 返回的结果中，错误为标准库提供的 <code>io::Error</code> 类型。其中 <code>kind</code> 方法可以得到一个 <code>io::ErrorKind</code> 枚举类型的值，可以用于判断错误原因。</p>
+<p>我们尝试更详细的例子：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::fs::File;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io::ErrorKind;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> f = File::open(<span class="hljs-string">"hello.txt"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">let</span> f = <span class="hljs-keyword">match</span> f &#123;</span><br><span class="line">        <span class="hljs-literal">Ok</span>(file) =&gt; file,</span><br><span class="line">        <span class="hljs-comment">// 如果打开失败，匹配 kind() 的结果</span></span><br><span class="line">        <span class="hljs-literal">Err</span>(error) =&gt; <span class="hljs-keyword">match</span> error.kind() &#123;</span><br><span class="line">            <span class="hljs-comment">// 如果原因是找不到文件，尝试创建文件</span></span><br><span class="line">            ErrorKind::NotFound =&gt; <span class="hljs-keyword">match</span> File::create(<span class="hljs-string">"hello.txt"</span>) &#123;</span><br><span class="line">                <span class="hljs-comment">// 如果创建成功，则返回创建的文件</span></span><br><span class="line">                <span class="hljs-literal">Ok</span>(created_file) =&gt; created_file,</span><br><span class="line">                <span class="hljs-comment">// 否则中止程序</span></span><br><span class="line">                <span class="hljs-literal">Err</span>(create_err) =&gt; <span class="hljs-built_in">panic!</span>(<span class="hljs-string">"Problem creating the file &#123;:?&#125;"</span>, create_err),</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="hljs-comment">// 如果是其他原因，中止程序</span></span><br><span class="line">            other_error =&gt; <span class="hljs-built_in">panic!</span>(<span class="hljs-string">"Problem opening the file: &#123;:?&#125;"</span>, other_error),</span><br><span class="line">        &#125;,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"File: &#123;:?&#125;"</span>, f);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="出错时中止的快捷方法：unwrap-与-expect"><a href="#出错时中止的快捷方法：unwrap-与-expect" class="headerlink" title="出错时中止的快捷方法：unwrap 与 expect"></a>出错时中止的快捷方法：<code>unwrap</code> 与 <code>expect</code></h3><p>使用 <code>match</code>，我们可以正常进行错误判断，并根据不同情况进行处理，不过这些 <code>panic!</code> 稍微有点繁琐。<code>Result&lt;T, E&gt;</code> 类型中有一些函数可以帮我们简化这个任务。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::fs::File;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">    <span class="hljs-comment">// unwrap会在成功时直接返回结果数据，失败时直接panic，输出标准的信息</span></span><br><span class="line">    <span class="hljs-keyword">let</span> f = File::open(<span class="hljs-string">"hello.txt"</span>).unwrap();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// expect会在成功时直接返回结果数据，失败时直接panic，以参数传入的字符串开头</span></span><br><span class="line">    <span class="hljs-keyword">let</span> f = File::open(<span class="hljs-string">"hello.txt"</span>).expect(<span class="hljs-string">"Failed to open hello.txt"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="传递错误"><a href="#传递错误" class="headerlink" title="传递错误"></a>传递错误</h3><p>有时候你实现了一个函数，但是并不想在函数内部决定如何处理错误，而是交给调用者来处理，这时候我们需要将错误传递到函数外面。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::fs::File;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io::Read;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">read_username_from_file</span></span>() -&gt; <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> f = File::open(<span class="hljs-string">"hello.txt"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 要调用 `read_to_string`，文件必须是可变的</span></span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> f = <span class="hljs-keyword">match</span> f &#123;</span><br><span class="line">        <span class="hljs-literal">Ok</span>(file) =&gt; file,</span><br><span class="line"></span><br><span class="line">        <span class="hljs-comment">// 打开文件出错时，函数直接返回错误结果</span></span><br><span class="line">        <span class="hljs-literal">Err</span>(e) =&gt; <span class="hljs-keyword">return</span> <span class="hljs-literal">Err</span>(e),</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> s = <span class="hljs-built_in">String</span>::new();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">match</span> f.read_to_string(&amp;<span class="hljs-keyword">mut</span> s) &#123;</span><br><span class="line">        <span class="hljs-comment">// 读取成功时，返回成功的字符串</span></span><br><span class="line">        <span class="hljs-literal">Ok</span>(_) =&gt; <span class="hljs-literal">Ok</span>(s),</span><br><span class="line">        <span class="hljs-comment">// 读取失败时，返回错误结果</span></span><br><span class="line">        <span class="hljs-literal">Err</span>(e) =&gt; <span class="hljs-literal">Err</span>(e),</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="传递错误的快捷方法："><a href="#传递错误的快捷方法：" class="headerlink" title="传递错误的快捷方法：?"></a>传递错误的快捷方法：<code>?</code></h3><p>下面的例子和刚刚那个一样，只是使用了 <code>?</code> 来快捷传递错误。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">read_username_from_file</span></span>() -&gt; <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="hljs-comment">// 打开文件成功时返回文件，失败时直接让函数返回错误结果</span></span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> f = File::open(<span class="hljs-string">"hello.txt"</span>)?;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> s = <span class="hljs-built_in">String</span>::new();</span><br><span class="line">    <span class="hljs-comment">// 读取到字符串，失败时直接让函数返回错误结果</span></span><br><span class="line">    f.read_to_string(&amp;<span class="hljs-keyword">mut</span> s)?;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 返回成功读取的字符串</span></span><br><span class="line">    <span class="hljs-literal">Ok</span>(s)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用 <code>?</code>，我们甚至可以将代码简化为：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">read_username_from_file</span></span>() -&gt; <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> s = <span class="hljs-built_in">String</span>::new();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 打开文件，失败时直接让函数返回错误结果</span></span><br><span class="line">    <span class="hljs-comment">// 打开成功时，调用 read_to_string 方法</span></span><br><span class="line">    File::open(<span class="hljs-string">"hello.txt"</span>)?.read_to_string(&amp;<span class="hljs-keyword">mut</span> s)?;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 返回成功读取的字符串</span></span><br><span class="line">    <span class="hljs-literal">Ok</span>(s)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>?</code> 只能用于返回 <code>Result</code> 的函数中（或者其他实现了 <code>Try</code> 特性的类型），在其他的函数中，还得写代码判断 <code>Result</code> 的结果。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::fs::File;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io::Read;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">read_username_from_file</span></span>() -&gt; <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> f = File::open(<span class="hljs-string">"hello.txt"</span>)?;</span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> s = <span class="hljs-built_in">String</span>::new();</span><br><span class="line">    f.read_to_string(&amp;<span class="hljs-keyword">mut</span> s)?;</span><br><span class="line">    <span class="hljs-literal">Ok</span>(s)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">    <span class="hljs-comment">// 这里使用 ? 会导致编译错误</span></span><br><span class="line">    <span class="hljs-keyword">let</span> f = read_username_from_file()?;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"File: &#123;:?&#125;"</span>, f);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>不过，<code>main</code> 函数是比较特殊的，它的返回值类型有一定的约束。其中 <code>()</code> 和 <code>Result&lt;T, E&gt;</code> 都是允许的返回类型。</p>
+<p>我们可以这样修改 <code>main</code>，让它里面可以使用 <code>?</code>：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::error::Error;</span><br><span class="line"><span class="hljs-keyword">use</span> std::fs::File;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io::Read;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">read_username_from_file</span></span>() -&gt; <span class="hljs-built_in">Result</span>&lt;<span class="hljs-built_in">String</span>, io::Error&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> f = File::open(<span class="hljs-string">"hello.txt"</span>)?;</span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> s = <span class="hljs-built_in">String</span>::new();</span><br><span class="line">    f.read_to_string(&amp;<span class="hljs-keyword">mut</span> s)?;</span><br><span class="line">    <span class="hljs-literal">Ok</span>(s)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() -&gt; <span class="hljs-built_in">Result</span>&lt;(), <span class="hljs-built_in">Box</span>&lt;dyn Error&gt;&gt; &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> f = read_username_from_file()?;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"File: &#123;:?&#125;"</span>, f);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-literal">Ok</span>(())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里 <code>Box&lt;dyn Error&gt;</code> 类型被称为是特性对象，这里我们只需要知道它可以指代任意类型的错误。</p>
+<h2 id="到底要不要-panic"><a href="#到底要不要-panic" class="headerlink" title="到底要不要 panic!"></a>到底要不要 <code>panic!</code></h2><p>所以我们到底啥时候该调用 <code>panic!</code>，啥时候返回 <code>Result</code> 呢？调用 <code>panic!</code> 会使一个可恢复的问题变成不可恢复的错误，所以通常情况下，我们会选择返回 <code>Result</code>。但是在少数情况下，使用 <code>panic!</code> 更加合适。</p>
+<h3 id="示例代码、原型代码、测试代码"><a href="#示例代码、原型代码、测试代码" class="headerlink" title="示例代码、原型代码、测试代码"></a>示例代码、原型代码、测试代码</h3><p>当为了说明一些概念而编写示例时，进行完善的错误处理会让例子更加复杂。这时候使用 <code>unwrap</code> 或者 <code>except</code> 来简单提示此处可能会产生错误会更好些。</p>
+<p>与之类似，当你在原型代码中尚未决定如何处理一些错误时，可以先使用 <code>unwrap</code> 或者 <code>except</code> 来表示此处会产生错误，在后面再通过具体的处理代码来替换掉即可。</p>
+<p>在测试中，<code>panic!</code> 是测试失败的标志。即使不是测试的目标，也可以用 <code>unwrap</code> 或者 <code>except</code> 来让错误不可恢复。</p>
+<h3 id="当你比编译器了解更多信息时"><a href="#当你比编译器了解更多信息时" class="headerlink" title="当你比编译器了解更多信息时"></a>当你比编译器了解更多信息时</h3><p>另一种适合使用 <code>unwrap</code> 的场景是，你有一些其他的逻辑可以保证 <code>Result</code> 只会是 <code>Ok</code> 的。但是编译器可能不知道这些逻辑，他仍然会要求你处理错误情况。</p>
+<p>比如：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::net::IpAddr;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 这里我们知道 127.0.0.1 是有效的IP地址，但是编译器只会识别为一般的字符串。</span></span><br><span class="line"><span class="hljs-keyword">let</span> home: IpAddr = <span class="hljs-string">"127.0.0.1"</span>.parse().unwrap();</span><br></pre></td></tr></table></figure>
+
+<h3 id="错误处理指南"><a href="#错误处理指南" class="headerlink" title="错误处理指南"></a>错误处理指南</h3><p>建议在可能导致程序进入「错误的状态」时使用 <code>panic!</code>，「错误的状态」是指某些假设、保证、约定、等式不成立的状态，比如无效的值、自相矛盾的值、缺失的值等等传入程序、并满足以下某些条件：</p>
+<ul>
+<li>「错误的状态」并不是预期偶尔发生的情况</li>
+<li>这之后的代码需要依赖正确的状态执行</li>
+<li>没有好的方式将其转换为所使用的类型</li>
+</ul>
+<p>如果某人使用了你的代码，并且传入某些无效的值，最好的选择就是使用 <code>panic!</code> 告诉他代码中存在缺陷，并让其修复该问题。类似地，在调用外部代码时失去控制导致无效状态产生时，也经常使用 <code>panic!</code>。</p>
+<p>然而，如果失败结果也是预期结果之一时，使用 <code>Result</code> 就更加合适了，比如，解析某种格式的数据或者 HTTP 请求达到频率限制。这些都是程序所预期的错误场景，需要在程序中有明确处理逻辑。</p>
+<p>当代码对某些值执行操作时，应该首先验证这些值是否有效，否则抛出 <code>panic!</code>。这主要是出于安全考虑：尝试在无效的数据上进行操作会使代码暴露出漏洞。这也是标准库会在你尝试越界访问内存时使用 <code>panic!</code> 的原因。函数通常存在一些约束：函数的行为仅在满足特定条件的情况下保证正常。当这些约束被打破时应该抛出 <code>panic!</code>，因为这属于调用方的代码缺陷，调用方的开发者需要修复这个问题。函数的约束应该在 API 文档中描述清楚。</p>
+<p>然而，在函数中加入大量的错误检查逻辑有些啰嗦且烦人。幸好，我们可以依赖 Rust 的类型系统（编译器的类型检查）来完成大多数检查。如果函数有特定的参数类型，那么编译器会为你保证传入的参数值有正确的类型。如果是某个确切类型而不是 <code>Option</code>，那么程序的预期就是有正确类型的值，而不是没有值，就不需要再处理 <code>Some</code> 或者 <code>None</code> 的情况了。</p>
+<h3 id="创建自定义的类型用于验证"><a href="#创建自定义的类型用于验证" class="headerlink" title="创建自定义的类型用于验证"></a>创建自定义的类型用于验证</h3><figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 创建猜数字的结构，用于保存数值</span></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Guess</span></span> &#123;</span><br><span class="line">  <span class="hljs-comment">// value不是公开的，所以模块外部无法使用 Guess &#123; value &#125; 来构造</span></span><br><span class="line">  value: <span class="hljs-built_in">i32</span>,</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">impl</span> Guess &#123;</span><br><span class="line">  <span class="hljs-comment">// 创建示例时，会为我们检查数值的范围</span></span><br><span class="line">  <span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">new</span></span>(value: <span class="hljs-built_in">i32</span>) -&gt; Guess &#123;</span><br><span class="line">    <span class="hljs-keyword">if</span> value &lt; <span class="hljs-number">1</span> || value &gt; <span class="hljs-number">100</span> &#123;</span><br><span class="line">      <span class="hljs-built_in">panic!</span>(<span class="hljs-string">"Guess value must be between 1 and 100, got &#123;&#125;."</span>, value);</span><br><span class="line">    &#125;</span><br><span class="line">    Guess &#123; value &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="hljs-comment">// 这样在函数外部使用 value() 函数得到的值就一定是 1-100 的数字了</span></span><br><span class="line">  <span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">value</span></span>(&amp;<span class="hljs-keyword">self</span>) -&gt; <span class="hljs-built_in">i32</span> &#123;</span><br><span class="line">    <span class="hljs-keyword">self</span>.value</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样我们只要把相应的函数的参数约束为 <code>Guess</code> 类型，我们就一定能够得到 1 - 100 的数字。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Rust 中错误处理相关的功能是设计来帮助你编写健壮的代码的。 <code>panic!</code> 宏将标志你的程序将进入无法处理的状态，会中止程序执行，而不是尝试继续在该状态下执行。<code>Result</code> 枚举使用 Rust 的类型系统来代表程序中可能执行失败，但是可以进行相应的恢复处理的情况。可以使用 <code>Result</code> 来告诉调用方存在一些错误的情况需要处理，使用 <code>panic!</code> 来告诉调用方他的调用不满足函数的约束/使用前提，可以活用 Rust 的类型系统来直接约束函数的参数。</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Rust/">Rust</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/11/29/safety-designs-of-rust/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">Rust的安全性设计</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/11/26/learning-rust-6/">
+                <span class="level-item">Rust学习笔记6 - 常用集合类型</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="image container is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://www.gravatar.com/avatar/968c826fa8b03009fa3d708f0bd041e9?s=128" alt="Linkeo">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        Linkeo
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Node.js Developer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Hangzhou, China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        18
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        4
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        10
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/linkeo">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/linkeo">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#不可恢复错误与-panic">
+        <span class="has-mr-6">1</span>
+        <span>不可恢复错误与 panic!</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#查看-panic-发生的调用栈">
+        <span class="has-mr-6">1.1</span>
+        <span>查看 panic! 发生的调用栈</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#可恢复的错误与-Result">
+        <span class="has-mr-6">2</span>
+        <span>可恢复的错误与 Result</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#匹配不同错误类型">
+        <span class="has-mr-6">2.1</span>
+        <span>匹配不同错误类型</span>
+        </a></li><li>
+        <a class="is-flex" href="#出错时中止的快捷方法：unwrap-与-expect">
+        <span class="has-mr-6">2.2</span>
+        <span>出错时中止的快捷方法：unwrap 与 expect</span>
+        </a></li><li>
+        <a class="is-flex" href="#传递错误">
+        <span class="has-mr-6">2.3</span>
+        <span>传递错误</span>
+        </a></li><li>
+        <a class="is-flex" href="#传递错误的快捷方法：">
+        <span class="has-mr-6">2.4</span>
+        <span>传递错误的快捷方法：?</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#到底要不要-panic">
+        <span class="has-mr-6">3</span>
+        <span>到底要不要 panic!</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#示例代码、原型代码、测试代码">
+        <span class="has-mr-6">3.1</span>
+        <span>示例代码、原型代码、测试代码</span>
+        </a></li><li>
+        <a class="is-flex" href="#当你比编译器了解更多信息时">
+        <span class="has-mr-6">3.2</span>
+        <span>当你比编译器了解更多信息时</span>
+        </a></li><li>
+        <a class="is-flex" href="#错误处理指南">
+        <span class="has-mr-6">3.3</span>
+        <span>错误处理指南</span>
+        </a></li><li>
+        <a class="is-flex" href="#创建自定义的类型用于验证">
+        <span class="has-mr-6">3.4</span>
+        <span>创建自定义的类型用于验证</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#总结">
+        <span class="has-mr-6">4</span>
+        <span>总结</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://hexo.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hexo.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://kiruya.github.io/five-minutes-business-school/#/000" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Business School</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">kiruya.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.invokerll.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Invokerll&#39;s Blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.invokerll.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Algorithm/" style="font-size: 12.5px;">Algorithm</a> <a href="/tags/Event/" style="font-size: 10px;">Event</a> <a href="/tags/Fibonnaci/" style="font-size: 10px;">Fibonnaci</a> <a href="/tags/JavaScript/" style="font-size: 17.5px;">JavaScript</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/OOJS/" style="font-size: 12.5px;">OOJS</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/Rust/" style="font-size: 20px;">Rust</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-29T15:46:46.000Z">2020-11-29</time></div>
+                    <a href="/2020/11/29/safety-designs-of-rust/" class="has-link-black-ter is-size-6">Rust的安全性设计</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-29T07:01:09.000Z">2020-11-29</time></div>
+                    <a href="/2020/11/29/learning-rust-7/" class="has-link-black-ter is-size-6">Rust学习笔记7 - 错误处理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-26T08:14:23.000Z">2020-11-26</time></div>
+                    <a href="/2020/11/26/learning-rust-6/" class="has-link-black-ter is-size-6">Rust学习笔记6 - 常用集合类型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-13T10:23:37.000Z">2020-11-13</time></div>
+                    <a href="/2020/11/13/learning-rust-5/" class="has-link-black-ter is-size-6">Rust学习笔记5 - 模块管理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-09T02:22:58.000Z">2020-11-09</time></div>
+                    <a href="/2020/11/09/learning-rust-4/" class="has-link-black-ter is-size-6">Rust学习笔记4 - 枚举与模式匹配</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Algorithm/">
+            <span class="level-start">
+                <span class="level-item">Algorithm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Rust/">
+            <span class="level-start">
+                <span class="level-item">Rust</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">8</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Algorithm/">
+                        <span class="tag">Algorithm</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Event/">
+                        <span class="tag">Event</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Fibonnaci/">
+                        <span class="tag">Fibonnaci</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Matrix/">
+                        <span class="tag">Matrix</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Performance/">
+                        <span class="tag">Performance</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Promise/">
+                        <span class="tag">Promise</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Rust/">
+                        <span class="tag">Rust</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-29T15:46:46.000Z">2020-11-29</time></div>
+                    <a href="/2020/11/29/safety-designs-of-rust/" class="has-link-black-ter is-size-6">Rust的安全性设计</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-29T07:01:09.000Z">2020-11-29</time></div>
+                    <a href="/2020/11/29/learning-rust-7/" class="has-link-black-ter is-size-6">Rust学习笔记7 - 错误处理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-26T08:14:23.000Z">2020-11-26</time></div>
+                    <a href="/2020/11/26/learning-rust-6/" class="has-link-black-ter is-size-6">Rust学习笔记6 - 常用集合类型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-13T10:23:37.000Z">2020-11-13</time></div>
+                    <a href="/2020/11/13/learning-rust-5/" class="has-link-black-ter is-size-6">Rust学习笔记5 - 模块管理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-09T02:22:58.000Z">2020-11-09</time></div>
+                    <a href="/2020/11/09/learning-rust-4/" class="has-link-black-ter is-size-6">Rust学习笔记4 - 枚举与模式匹配</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Algorithm/">
+            <span class="level-start">
+                <span class="level-item">Algorithm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Rust/">
+            <span class="level-start">
+                <span class="level-item">Rust</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">8</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Algorithm/">
+                        <span class="tag">Algorithm</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Event/">
+                        <span class="tag">Event</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Fibonnaci/">
+                        <span class="tag">Fibonnaci</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Matrix/">
+                        <span class="tag">Matrix</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Performance/">
+                        <span class="tag">Performance</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Promise/">
+                        <span class="tag">Promise</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Rust/">
+                        <span class="tag">Rust</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Rust学习笔记7 - 错误处理" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 Linkeo&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                <br>
+                <span id="busuanzi_container_site_uv">
+                共<span id="busuanzi_value_site_uv">0</span>个访客
+                </span>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download Icarus on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fas fa-palette"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

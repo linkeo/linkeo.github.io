@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+<title>Rust学习笔记5 - 模块管理 - 星空博客</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+    <meta name="description" content="本文是 Rust 学习笔记系列第五篇，参考 Rust 指南的第 7 章，涉及使用包、箱子、模块来管理项目。">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust学习笔记5 - 模块管理">
+<meta property="og:url" content="https://blog.linkeo.me/2020/11/13/learning-rust-5/index.html">
+<meta property="og:site_name" content="星空博客">
+<meta property="og:description" content="本文是 Rust 学习笔记系列第五篇，参考 Rust 指南的第 7 章，涉及使用包、箱子、模块来管理项目。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-11-26T08:05:34.697Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rust学习笔记5 - 模块管理">
+<meta name="twitter:description" content="本文是 Rust 学习笔记系列第五篇，参考 Rust 指南的第 7 章，涉及使用包、箱子、模块来管理项目。">
+
+
+
+
+
+<link rel="icon" href="/favicon.ico">
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
+<link rel="stylesheet" href="/icons/all.css">
+<link rel="stylesheet" href="/fonts/css.css?family=Ubuntu:400,600|Source+Code+Pro">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+
+
+    
+    
+    
+    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+    
+
+    
+    
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
+    
+
+    
+    
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
+
+
+    
+    
+    
+    
+
+<link rel="stylesheet" href="/css/back-to-top.css">
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+<link rel="stylesheet" href="/css/progressbar.css">
+<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
+
+    
+    
+    
+
+    
+    
+    
+        <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+
+    
+
+
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="is-3-column">
+    <nav class="navbar navbar-main">
+    <div class="container">
+        <div class="navbar-brand is-flex-center">
+            <a class="navbar-item navbar-logo" href="/">
+            
+                <img src="/images/logo.png" alt="Rust学习笔记5 - 模块管理" height="28">
+            
+            </a>
+        </div>
+        <div class="navbar-menu">
+            
+            <div class="navbar-start">
+                
+                <a class="navbar-item" href="/">Posts</a>
+                
+                <a class="navbar-item" href="/archives">Archives</a>
+                
+                <a class="navbar-item" href="/categories">Categories</a>
+                
+                <a class="navbar-item" href="/tags">Tags</a>
+                
+            </div>
+            
+            <div class="navbar-end">
+                
+                    
+                    
+                    <a class="navbar-item" target="_blank" title="Repository" href="https://github.com/linkeo/linkeo.github.io">
+                        
+                        <i class="fab fa-github"></i>
+                        
+                    </a>
+                    
+                
+                
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
+                
+                <a class="navbar-item search" title="搜索" href="javascript:;">
+                    <i class="fas fa-search"></i>
+                </a>
+                
+            </div>
+        </div>
+    </div>
+</nav>
+    
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
+    
+    <div class="card-content article ">
+        
+        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
+            <div class="level-left">
+                <time class="level-item has-text-grey" datetime="2020-11-13T10:23:37.000Z">2020-11-13</time>
+                
+                <div class="level-item">
+                <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                </div>
+                
+                
+                <span class="level-item has-text-grey">
+                    
+                    
+                    25 分钟 读完 (大约 3767 个字)
+                </span>
+                
+                
+                <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
+                    <i class="far fa-eye"></i>
+                    <span id="busuanzi_value_page_pv">0</span>次访问
+                </span>
+                
+            </div>
+        </div>
+        
+        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+            
+                Rust学习笔记5 - 模块管理
+            
+        </h1>
+        <div class="content">
+            <p>本文是 Rust 学习笔记系列第五篇，参考 Rust 指南的第 7 章，涉及使用包、箱子、模块来管理项目。</p>
+<a id="more"></a>
+
+<p>在编写大项目时，很难将整个项目完整的装到脑子里，所以如何组织代码就很重要了。通过合理聚集相关功能、拆分不同功能的代码，可以让我们能够定位特定功能的代码的位置。</p>
+<p>到目前为止，我们都是在一个文件里写的示例。随着项目变大，就需要将代码拆分到不同的模块、不同的文件中去。一个包（package）可以包含多个可执行箱子（binary crates）和最多一个库箱子（library crate）。随着包变大，可以将一部分提取到单独的箱子中（会成为外部依赖）。对于多个不相关的包构成的非常大的项目，cargo 提供了工作空间（workspace）。</p>
+<p>除了聚集和拆分功能，封装具体实现可以让我们在更高的层次复用代码：一旦实现了一个功能，其他的代码可以通过公开的接口来使用该功能，而不需要关心具体实现。公开的接口与私有的实现可以通过代码来自己决定。</p>
+<p>另一个相关的概念是「作用域」：在代码所在的嵌套上下文中，有一系列的名称是「在作用域内」的。在编写、阅读或者编译代码时，开发者与编译器需要知道特定位置的特定名称是指代的什么项目（item）：变量、函数、结构体、枚举、模块、常量还是什么其他的。同一个作用域中，不能有多个项目拥有相同的名称。</p>
+<p>Rust 提供了多种特性用于管理代码结构，包括哪些细节要暴露，哪些细节要隐藏，以及每个作用域都有哪些名称。这些特性有时候被统称为「模块系统」：</p>
+<ul>
+<li>包（Packages）：Cargo 的特性，用于构建、测试、共享箱子</li>
+<li>箱子（Crates）：一个模块树，用于生成一个库或者可执行文件</li>
+<li>模块（Modules）与使用（use）：允许控制路径的组织、作用域、可见性</li>
+<li>路径（Paths）：一种命名项目（item）的方式，比如结构体、函数或者模块</li>
+</ul>
+<h2 id="包和箱子"><a href="#包和箱子" class="headerlink" title="包和箱子"></a>包和箱子</h2><p>首先我们介绍包（Package）和箱子（Crate），箱子代表一个库或者可执行文件。箱子的根是一个源文件，Rust 编译器从这个文件开始编译，并构建箱子的根模块（模块会在稍微后面一点介绍）。包由一个或者多个箱子组成。包里会有一个 <code>Cargo.toml</code> 文件用于描述如何构建这些箱子。</p>
+<p>包的内容物由多个规则决定：包里面最多只能有一个库箱子，包里面可以有任意多个可执行箱子，包里面至少要有一个箱子（可以是库箱子或者可执行箱子）。</p>
+<p>通过 <code>cargo new &lt;name&gt;</code> 命令可以创建新的包。我们实际执行一下看看会发生什么：它会创建一个文件夹，并在里面创建一些文件。</p>
+<p>在创建的文件中，我们先介绍这两个：</p>
+<figure class="highlight plain hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Cargo.toml</span><br><span class="line">src/main.ts</span><br></pre></td></tr></table></figure>
+
+<p>Cargo 会创建一个 <code>Cargo.toml</code> 文件，表示一个包。<code>Cargo.toml</code> 里面并没有提到 <code>src/main.ts</code> 文件，这是因为 Cargo 约定 <code>src/main.rs</code> 是与包同名的可执行箱子的根源文件。与之类似，Cargo 约定，如果包里面存在 <code>src/lib.ts</code>，那包里就存在一个与包同名的库箱子，且 <code>src/lib.ts</code> 就是这个箱子的根源文件。Cargo 会把这些根源文件传给 <code>rustc</code> 来构建库或者可执行文件。</p>
+<p>这个例子里，我们只有 <code>src/main.ts</code> 文件。如果包里同时存在 <code>src/main.ts</code> 和 <code>src/lib.ts</code>，那这个包里就同时存在与包同名的可执行箱子与库箱子。通过在 <code>src/bin/</code> 目录下添加源文件，可以增加新的二进制箱子，每个文件都构成一个可执行箱子。</p>
+<p>箱子可以聚集相关的功能到一个作用域里，以便可以在多个项目中共享。通过把箱子引入到作用域，我们就可以使用该箱子的功能了。通过箱子来封装功能代码可以避免命名冲突。因为不同箱子之间不属于同一个作用域，相同的命名不会产生冲突。</p>
+<p>说完包和箱子，我们再介绍一下模块和模块系统中的其他部分，“路径”（paths）可以为项目（item）命名、<code>use</code> 关键字可以将路径引入作用域、<code>pub</code> 关键字用于将项目公开化、以及 <code>as</code> 关键字、外部包等。</p>
+<p>首先先介绍模块。</p>
+<h2 id="模块，控制作用域和可见性"><a href="#模块，控制作用域和可见性" class="headerlink" title="模块，控制作用域和可见性"></a>模块，控制作用域和可见性</h2><p>模块（Module）可以将箱子内部的代码分成多个部分，提供可读性与易用性。模块也可以控制其中的项目的可见性（privacy），让其是公开的（在外部也可以使用）或者私有的（内部实现细节，外部不可见）。</p>
+<p>作为例子，我们写一个提供餐厅的功能的库箱子。我们先定义好函数的签名，先不写实现。</p>
+<p>在餐厅里，顾客所在的区域称为前台，在这里领位带领顾客入座，服务员为顾客点单和收银，酒保制作饮品。后台是大厨、厨师、洗碗工、经理们工作的地方。</p>
+<p>我们可以用 <code>cargo new --lib restaurant</code> 创建一个包含库箱子的包。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 餐厅前台</span></span><br><span class="line"><span class="hljs-keyword">mod</span> front_of_house &#123;</span><br><span class="line">    <span class="hljs-comment">// 领位</span></span><br><span class="line">    <span class="hljs-keyword">mod</span> hosting &#123;</span><br><span class="line">        <span class="hljs-comment">// 让顾客排队</span></span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">add_to_waitlist</span></span>() &#123;&#125;</span><br><span class="line">        <span class="hljs-comment">// 让顾客入座</span></span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">seat_at_table</span></span>() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="hljs-comment">// 服务员</span></span><br><span class="line">    <span class="hljs-keyword">mod</span> serving &#123;</span><br><span class="line">        <span class="hljs-comment">// 点单</span></span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">take_order</span></span>() &#123;&#125;</span><br><span class="line">        <span class="hljs-comment">// 服务</span></span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">serve_order</span></span>() &#123;&#125;</span><br><span class="line">        <span class="hljs-comment">// 收银</span></span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">take_payment</span></span>() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码可表示下面的模块结构：</p>
+<figure class="highlight yaml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-attr">crate:</span></span><br><span class="line"><span class="hljs-attr">  front_of_house:</span></span><br><span class="line"><span class="hljs-attr">    hosting:</span></span><br><span class="line"><span class="hljs-attr">      add_to_waitlist:</span> <span class="hljs-string">fn</span></span><br><span class="line"><span class="hljs-attr">      seat_at_table:</span> <span class="hljs-string">fn</span></span><br><span class="line"><span class="hljs-attr">    serving:</span></span><br><span class="line"><span class="hljs-attr">      take_order:</span> <span class="hljs-string">fn</span></span><br><span class="line"><span class="hljs-attr">      serve_order:</span> <span class="hljs-string">fn</span></span><br><span class="line"><span class="hljs-attr">      take_payment:</span> <span class="hljs-string">fn</span></span><br></pre></td></tr></table></figure>
+
+<p>模块树中包含一些嵌套关系、一些邻接关系。如果模块 A 包含在模块 B 中，我们就称模块 A 是模块 B 的子模块，模块 B 是模块 A 的父模块。整个模块树的根节点是一个名为 <code>crate</code> 的隐藏模块。</p>
+<h2 id="路径，引用模块树中的项目"><a href="#路径，引用模块树中的项目" class="headerlink" title="路径，引用模块树中的项目"></a>路径，引用模块树中的项目</h2><p>Rust 为了在模块树中找到项目，使用了与文件系统类似的路径（path）。</p>
+<p>路径有两种形式：</p>
+<ul>
+<li>绝对路径：从箱子的根开始，以箱子名或者字面量 <code>crate</code> 为前缀</li>
+<li>相对路径：从当前模块开始，以 <code>self</code>、<code>super</code> 或者当前模块中的标识符为前缀</li>
+</ul>
+<p>不管是绝对路径还是相对路径，都用 <code>::</code> 连接多个标识符。</p>
+<p>举个例子：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 餐厅前台</span></span><br><span class="line"><span class="hljs-keyword">mod</span> front_of_house &#123;</span><br><span class="line">    <span class="hljs-comment">// 领位</span></span><br><span class="line">    <span class="hljs-keyword">mod</span> hosting &#123;</span><br><span class="line">        <span class="hljs-comment">// 让顾客排队</span></span><br><span class="line">        <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">add_to_waitlist</span></span>() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 根模块（crate模块）中定义的公开函数</span></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">eat_at_restaurant</span></span>() &#123;</span><br><span class="line">    <span class="hljs-comment">// 绝对路径</span></span><br><span class="line">    crate::front_of_house::hosting::add_to_waitlist();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 相对路径</span></span><br><span class="line">    front_of_house::hosting::add_to_waitlist();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中，虽然路径的引用是正确的，但是会因为 hosting 模块并非公开的而在编译时报错。</p>
+<p>模块不仅仅用于组织代码，也用于定义 Rust 的可见性边界：模块中封装的实现并不能被外界所使用。所以想让一些项目私有的话，可以用一个模块把它装在里面。</p>
+<p>Rust 中所有项目（items）的默认可见性都是私有的。父模块不能使用子模块中私有的项目，但是子模块可以使用任意父模块的私有项目。因为子模块对外隐藏细节，但是它仍然位于父模块的作用域内。</p>
+<h3 id="使用-pub-关键字来公开路径"><a href="#使用-pub-关键字来公开路径" class="headerlink" title="使用 pub 关键字来公开路径"></a>使用 <code>pub</code> 关键字来公开路径</h3><p>我们需要让路径上的每个节点都是可见的，才能够最终访问到路径所指的项目：</p>
+<ul>
+<li><code>front_of_house</code> 本来就是对 <code>eat_at_restaurant</code> 可见的</li>
+<li><code>hosting</code> 和 <code>add_to_waitlist</code> 则需要使用 <code>pub</code> 关键字来将其变为公开的</li>
+</ul>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 餐厅前台</span></span><br><span class="line"><span class="hljs-keyword">mod</span> front_of_house &#123;</span><br><span class="line">    <span class="hljs-comment">// 领位</span></span><br><span class="line">    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> hosting &#123;</span><br><span class="line">        <span class="hljs-comment">// 让顾客排队</span></span><br><span class="line">        <span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">add_to_waitlist</span></span>() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 根模块（crate模块）中定义的公开函数</span></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">eat_at_restaurant</span></span>() &#123;</span><br><span class="line">    <span class="hljs-comment">// 绝对路径</span></span><br><span class="line">    crate::front_of_house::hosting::add_to_waitlist();</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 相对路径</span></span><br><span class="line">    front_of_house::hosting::add_to_waitlist();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-super-关键字开始的路径"><a href="#使用-super-关键字开始的路径" class="headerlink" title="使用 super 关键字开始的路径"></a>使用 <code>super</code> 关键字开始的路径</h3><p>我们可以用 <code>super</code> 来从父模块开始构造路径，类似文件系统中的 <code>..</code> 符号。</p>
+<p>例如：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">mod</span> back_of_house &#123;</span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">fix_incorrect_order</span></span>() &#123;</span><br><span class="line">        cook_order();</span><br><span class="line">        super::serve_order();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">cook_order</span></span>() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">serve_order</span></span>() &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使结构体和枚举公开化"><a href="#使结构体和枚举公开化" class="headerlink" title="使结构体和枚举公开化"></a>使结构体和枚举公开化</h3><p>我们也可以用 <code>pub</code> 将结构体和枚举变成公开的，但是这里会多一些细节。如果我们对结构体使用 <code>pub</code> 关键字，结构体本身会变为公开的，但是其字段仍然是私有的。我们可以根据需要对每个字段设置可见性。</p>
+<p>例如：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">mod</span> back_of_house &#123;</span><br><span class="line">    <span class="hljs-keyword">pub</span> <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Breakfast</span></span> &#123;</span><br><span class="line">        <span class="hljs-keyword">pub</span> toast: <span class="hljs-built_in">String</span>,</span><br><span class="line">        seasonal_fruit: <span class="hljs-built_in">String</span>,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">impl</span> Breakfast &#123;</span><br><span class="line">        <span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">summer</span></span>(toast: &amp;<span class="hljs-built_in">str</span>) -&gt; Breakfast &#123;</span><br><span class="line">            Breakfast &#123;</span><br><span class="line">                toast: <span class="hljs-built_in">String</span>::from(toast),</span><br><span class="line">                seasonal_fruit: <span class="hljs-built_in">String</span>::from(<span class="hljs-string">"peaches"</span>),</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">eat_at_restaurant</span></span>() &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> <span class="hljs-keyword">mut</span> meal = back_of_house::Breakfast::summer(<span class="hljs-string">"Rye"</span>);</span><br><span class="line">    meal.toast = <span class="hljs-built_in">String</span>::from(<span class="hljs-string">"Wheat"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="hljs-comment">// 这个会报错，因为 seasonal_fruit 在此处不可见</span></span><br><span class="line">    <span class="hljs-comment">// meal.seasonal_fruit = String::from("blueberries");</span></span><br><span class="line"></span><br><span class="line">    <span class="hljs-built_in">println!</span>(<span class="hljs-string">"I'd like &#123;&#125; toast please"</span>, meal.toast);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>与结构体不同，将枚举公开化的话，其所有的变种都会变为公开的，我们只需要在 <code>enum</code> 关键字前面加上 <code>pub</code> 关键字即可。</p>
+<h2 id="使用-use-关键字将路径引入到作用域中"><a href="#使用-use-关键字将路径引入到作用域中" class="headerlink" title="使用 use 关键字将路径引入到作用域中"></a>使用 <code>use</code> 关键字将路径引入到作用域中</h2><p>使用路径来指代项目看起来要写比较长的串，用起来会比较繁琐且臃肿。我们可以用 <code>use</code> 关键字来指代路径，并将其名称引入到当前作用域中，这样就不需要每次使用时都通过路径来访问了。</p>
+<p>例子：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 餐厅前台</span></span><br><span class="line"><span class="hljs-keyword">mod</span> front_of_house &#123;</span><br><span class="line">    <span class="hljs-comment">// 领位</span></span><br><span class="line">    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> hosting &#123;</span><br><span class="line">        <span class="hljs-comment">// 让顾客排队</span></span><br><span class="line">        <span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">add_to_waitlist</span></span>() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">use</span> crate::front_of_house::hosting;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">eat_at_restaurant</span></span>() &#123;</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>use</code> 关键字就有点像文件系统中的软链接。</p>
+<h3 id="使用-use-关键字的语言习惯"><a href="#使用-use-关键字的语言习惯" class="headerlink" title="使用 use 关键字的语言习惯"></a>使用 <code>use</code> 关键字的语言习惯</h3><p>下面这串代码与上面的功能完全一致，但是我们会习惯用上面的那一种。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 餐厅前台</span></span><br><span class="line"><span class="hljs-keyword">mod</span> front_of_house &#123;</span><br><span class="line">    <span class="hljs-comment">// 领位</span></span><br><span class="line">    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> hosting &#123;</span><br><span class="line">        <span class="hljs-comment">// 让顾客排队</span></span><br><span class="line">        <span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">add_to_waitlist</span></span>() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">use</span> crate::front_of_house::hosting::add_to_waitlist;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">eat_at_restaurant</span></span>() &#123;</span><br><span class="line">    add_to_waitlist();</span><br><span class="line">    add_to_waitlist();</span><br><span class="line">    add_to_waitlist();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>引入函数时，我们习惯只引入目标函数的路径父节点，这样我们在使用时就需要从其父节点开始写，与那些本就定义在当前作用域中的项目区分开来。而引入结构体、枚举等其他项目时，我们习惯直接引入目标路径。这个习惯并没有什么特别的原因，仅仅因为开发者习惯阅读这样的代码。</p>
+<p>有一个例外情况是，如果我们要引入多个同名的项目，我们就都引入其父节点。</p>
+<h3 id="使用-as-关键字为项目提供新的名称"><a href="#使用-as-关键字为项目提供新的名称" class="headerlink" title="使用 as 关键字为项目提供新的名称"></a>使用 <code>as</code> 关键字为项目提供新的名称</h3><p>对于上面引入同名项目的问题，有另一个解决方法就是将其中一个在当前作用域中重命名，我们使用 <code>as</code> 关键字为其指定新的名称：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::fmt::<span class="hljs-built_in">Result</span>;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io::<span class="hljs-built_in">Result</span> <span class="hljs-keyword">as</span> IoResult;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">function1</span></span>() -&gt; <span class="hljs-built_in">Result</span> &#123;&#125;</span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">function2</span></span>() -&gt; IoResult&lt;()&gt; &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-pub-use-将名称重新导出"><a href="#使用-pub-use-将名称重新导出" class="headerlink" title="使用 pub use 将名称重新导出"></a>使用 <code>pub use</code> 将名称重新导出</h3><figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">mod</span> front_of_house &#123;</span><br><span class="line">    <span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> hosting &#123;</span><br><span class="line">        <span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">add_to_waitlist</span></span>() &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// hosting 也将作为 crate 的公开成员导出</span></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">use</span> crate::front_of_house::hosting;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">eat_at_restaurant</span></span>() &#123;</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用外部包"><a href="#使用外部包" class="headerlink" title="使用外部包"></a>使用外部包</h3><p>我们可以在 <code>Cargo.toml</code> 中添加一个依赖来引入外部的包：</p>
+<figure class="highlight toml hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-section">[dependencies]</span></span><br><span class="line"><span class="hljs-attr">rand</span> = <span class="hljs-string">"0.5.5"</span></span><br></pre></td></tr></table></figure>
+
+<p>这样会让 Cargo 从 crates.io 下载 <code>rand</code> 包和其所有的依赖，并让 <code>rand</code> 在项目中可用。</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// 以 rand 开始的路径可以引用其包中的内容</span></span><br><span class="line"><span class="hljs-keyword">use</span> rand::Rng;</span><br><span class="line"></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">main</span></span>() &#123;</span><br><span class="line">    <span class="hljs-keyword">let</span> secret_number = rand::thread_rng().gen_range(<span class="hljs-number">1</span>, <span class="hljs-number">101</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>标准库 <code>std</code> 也是一个包外部的箱子，因为其内置于 Rust 语言，不需要在 <code>Cargo.toml</code> 中添加依赖。</p>
+<h3 id="使用嵌套路径来组合多个-use-语句"><a href="#使用嵌套路径来组合多个-use-语句" class="headerlink" title="使用嵌套路径来组合多个 use 语句"></a>使用嵌套路径来组合多个 <code>use</code> 语句</h3><figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::cmp::Ordering;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 可以合并为</span></span><br><span class="line"><span class="hljs-keyword">use</span> std::&#123;cmp::Ordering, io&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在嵌套路径中可以用 <code>self</code> 表示当前的路径：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::io;</span><br><span class="line"><span class="hljs-keyword">use</span> std::io::Write;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 合并为</span></span><br><span class="line"><span class="hljs-keyword">use</span> std::io::&#123;<span class="hljs-keyword">self</span>, Write&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用-引入"><a href="#使用-引入" class="headerlink" title="使用 * 引入"></a>使用 <code>*</code> 引入</h3><p>如果我们要引入一个路径中的所有公开项目，我们可以在最后一节使用 <code>*</code> 来指代所有项目：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">use</span> std::collections::*;</span><br></pre></td></tr></table></figure>
+
+<h2 id="将模块拆分到多个文件中"><a href="#将模块拆分到多个文件中" class="headerlink" title="将模块拆分到多个文件中"></a>将模块拆分到多个文件中</h2><p>当模块变得很多时，需要将其代码写到单独的文件中，以便查找。</p>
+<p>我们将 front_of_house 模块的代码移到 <code>src/front_of_house.rs</code> 中：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// src/front_of_house.rs</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 领位</span></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> hosting &#123;</span><br><span class="line">  <span class="hljs-comment">// 让顾客排队</span></span><br><span class="line">  <span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">add_to_waitlist</span></span>() &#123;&#125;</span><br><span class="line">  <span class="hljs-comment">// 让顾客入座</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">seat_at_table</span></span>() &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 服务员</span></span><br><span class="line"><span class="hljs-keyword">mod</span> serving &#123;</span><br><span class="line">  <span class="hljs-comment">// 点单</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">take_order</span></span>() &#123;&#125;</span><br><span class="line">  <span class="hljs-comment">// 服务</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">serve_order</span></span>() &#123;&#125;</span><br><span class="line">  <span class="hljs-comment">// 收银</span></span><br><span class="line">  <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">take_payment</span></span>() &#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后将 <code>src/lib.rs</code> 的内容改为：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// src/lib.rs</span></span><br><span class="line"><span class="hljs-keyword">mod</span> front_of_house;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">use</span> crate::front_of_house::hosting;</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">eat_at_restaurant</span></span>() &#123;</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">    hosting::add_to_waitlist();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 <code>mod &lt;name&gt;</code> 后面接 <code>;</code> 会让 Rust 从同名的文件中加载该模块的内容。</p>
+<p>我们再创建一个 <code>src/front_of_house/hosting.rs</code> 文件，把 hosting 模块的代码移进去：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// src/front_of_house/hosting.rs</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 让顾客排队</span></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">add_to_waitlist</span></span>() &#123;&#125;</span><br><span class="line"><span class="hljs-comment">// 让顾客入座</span></span><br><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">seat_at_table</span></span>() &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后修改 <code>src/front_of_house.rs</code> 的内容：</p>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// src/front_of_house.rs</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 领位</span></span><br><span class="line"><span class="hljs-keyword">pub</span> <span class="hljs-keyword">mod</span> hosting;</span><br></pre></td></tr></table></figure>
+
+<p>可以看到文件结构与模块树是一致的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Rust 的模块系统可以让你用多个箱子与模块等来组织包里的代码。所有的内容都是默认私有的，对当前模块外部是不可见的。</p>
+
+        </div>
+        
+        <div class="level is-size-7 is-uppercase">
+            <div class="level-start">
+                <div class="level-item">
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Rust/">Rust</a>
+                </div>
+            </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+
+
+
+
+
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
+        
+        <div class="level-start">
+            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/11/26/learning-rust-6/">
+                <i class="level-item fas fa-chevron-left"></i>
+                <span class="level-item">Rust学习笔记6 - 常用集合类型</span>
+            </a>
+        </div>
+        
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/11/09/learning-rust-4/">
+                <span class="level-item">Rust学习笔记4 - 枚举与模式匹配</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
+        </div>
+        
+    </div>
+</div>
+
+
+</div>
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen  has-order-1 column-left ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <nav class="level">
+            <div class="level-item has-text-centered">
+                <div>
+                    
+                        <figure class="image container is-128x128 has-mb-6">
+                            <img class="is-rounded" src="https://www.gravatar.com/avatar/968c826fa8b03009fa3d708f0bd041e9?s=128" alt="Linkeo">
+                        </figure>
+                    
+                    
+                    <p class="is-size-4 is-block">
+                        Linkeo
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-block">
+                        Node.js Developer
+                    </p>
+                    
+                    
+                    <p class="is-size-6 is-flex is-flex-center has-text-grey">
+                        <i class="fas fa-map-marker-alt has-mr-7"></i>
+                        <span>Hangzhou, China</span>
+                    </p>
+                    
+                </div>
+            </div>
+        </nav>
+        <nav class="level is-mobile">
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        文章
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        18
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        分类
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        4
+                    </p>
+                </div>
+            </div>
+            <div class="level-item has-text-centered is-marginless">
+                <div>
+                    <p class="heading">
+                        标签
+                    </p>
+                    <p class="title has-text-weight-normal">
+                        10
+                    </p>
+                </div>
+            </div>
+        </nav>
+        <div class="level">
+            <a class="level-item button is-link is-rounded" href="https://github.com/linkeo">
+                关注我</a>
+        </div>
+        
+        
+        <div class="level is-mobile">
+            
+            <a class="level-item button is-white is-marginless" target="_blank" title="Github" href="https://github.com/linkeo">
+                
+                <i class="fab fa-github"></i>
+                
+            </a>
+            
+        </div>
+        
+    </div>
+</div>
+    
+        
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#包和箱子">
+        <span class="has-mr-6">1</span>
+        <span>包和箱子</span>
+        </a></li><li>
+        <a class="is-flex" href="#模块，控制作用域和可见性">
+        <span class="has-mr-6">2</span>
+        <span>模块，控制作用域和可见性</span>
+        </a></li><li>
+        <a class="is-flex" href="#路径，引用模块树中的项目">
+        <span class="has-mr-6">3</span>
+        <span>路径，引用模块树中的项目</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#使用-pub-关键字来公开路径">
+        <span class="has-mr-6">3.1</span>
+        <span>使用 pub 关键字来公开路径</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用-super-关键字开始的路径">
+        <span class="has-mr-6">3.2</span>
+        <span>使用 super 关键字开始的路径</span>
+        </a></li><li>
+        <a class="is-flex" href="#使结构体和枚举公开化">
+        <span class="has-mr-6">3.3</span>
+        <span>使结构体和枚举公开化</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#使用-use-关键字将路径引入到作用域中">
+        <span class="has-mr-6">4</span>
+        <span>使用 use 关键字将路径引入到作用域中</span>
+        </a><ul class="menu-list"><li>
+        <a class="is-flex" href="#使用-use-关键字的语言习惯">
+        <span class="has-mr-6">4.1</span>
+        <span>使用 use 关键字的语言习惯</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用-as-关键字为项目提供新的名称">
+        <span class="has-mr-6">4.2</span>
+        <span>使用 as 关键字为项目提供新的名称</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用-pub-use-将名称重新导出">
+        <span class="has-mr-6">4.3</span>
+        <span>使用 pub use 将名称重新导出</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用外部包">
+        <span class="has-mr-6">4.4</span>
+        <span>使用外部包</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用嵌套路径来组合多个-use-语句">
+        <span class="has-mr-6">4.5</span>
+        <span>使用嵌套路径来组合多个 use 语句</span>
+        </a></li><li>
+        <a class="is-flex" href="#使用-引入">
+        <span class="has-mr-6">4.6</span>
+        <span>使用 * 引入</span>
+        </a></li></ul></li><li>
+        <a class="is-flex" href="#将模块拆分到多个文件中">
+        <span class="has-mr-6">5</span>
+        <span>将模块拆分到多个文件中</span>
+        </a></li><li>
+        <a class="is-flex" href="#总结">
+        <span class="has-mr-6">6</span>
+        <span>总结</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
+    
+        
+
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            链接
+        </h3>
+        <ul class="menu-list">
+        
+            <li>
+                <a class="level is-mobile" href="https://hexo.io/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Hexo</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">hexo.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://kiruya.github.io/five-minutes-business-school/#/000" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Business School</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">kiruya.github.io</span>
+                    </span>
+                </a>
+            </li>
+        
+            <li>
+                <a class="level is-mobile" href="https://blog.invokerll.cn/" target="_blank">
+                    <span class="level-left">
+                        <span class="level-item">Invokerll&#39;s Blog</span>
+                    </span>
+                    <span class="level-right">
+                        <span class="level-item tag">blog.invokerll.cn</span>
+                    </span>
+                </a>
+            </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            标签云
+        </h3>
+        <a href="/tags/Algorithm/" style="font-size: 12.5px;">Algorithm</a> <a href="/tags/Event/" style="font-size: 10px;">Event</a> <a href="/tags/Fibonnaci/" style="font-size: 10px;">Fibonnaci</a> <a href="/tags/JavaScript/" style="font-size: 17.5px;">JavaScript</a> <a href="/tags/Matrix/" style="font-size: 10px;">Matrix</a> <a href="/tags/Node-js/" style="font-size: 15px;">Node.js</a> <a href="/tags/OOJS/" style="font-size: 12.5px;">OOJS</a> <a href="/tags/Performance/" style="font-size: 10px;">Performance</a> <a href="/tags/Promise/" style="font-size: 10px;">Promise</a> <a href="/tags/Rust/" style="font-size: 20px;">Rust</a>
+    </div>
+</div>
+
+    
+    
+        <div class="column-right-shadow is-hidden-widescreen ">
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-29T15:46:46.000Z">2020-11-29</time></div>
+                    <a href="/2020/11/29/safety-designs-of-rust/" class="has-link-black-ter is-size-6">Rust的安全性设计</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-29T07:01:09.000Z">2020-11-29</time></div>
+                    <a href="/2020/11/29/learning-rust-7/" class="has-link-black-ter is-size-6">Rust学习笔记7 - 错误处理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-26T08:14:23.000Z">2020-11-26</time></div>
+                    <a href="/2020/11/26/learning-rust-6/" class="has-link-black-ter is-size-6">Rust学习笔记6 - 常用集合类型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-13T10:23:37.000Z">2020-11-13</time></div>
+                    <a href="/2020/11/13/learning-rust-5/" class="has-link-black-ter is-size-6">Rust学习笔记5 - 模块管理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-09T02:22:58.000Z">2020-11-09</time></div>
+                    <a href="/2020/11/09/learning-rust-4/" class="has-link-black-ter is-size-6">Rust学习笔记4 - 枚举与模式匹配</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+        
+            
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Algorithm/">
+            <span class="level-start">
+                <span class="level-item">Algorithm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Rust/">
+            <span class="level-start">
+                <span class="level-item">Rust</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">8</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+        
+            <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Algorithm/">
+                        <span class="tag">Algorithm</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Event/">
+                        <span class="tag">Event</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Fibonnaci/">
+                        <span class="tag">Fibonnaci</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Matrix/">
+                        <span class="tag">Matrix</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Performance/">
+                        <span class="tag">Performance</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Promise/">
+                        <span class="tag">Promise</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Rust/">
+                        <span class="tag">Rust</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+        
+        </div>
+    
+</div>
+
+                
+
+
+
+
+<div class="column is-4-tablet is-4-desktop is-3-widescreen is-hidden-touch is-hidden-desktop-only has-order-3 column-right ">
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <h3 class="menu-label">
+            最新文章
+        </h3>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-29T15:46:46.000Z">2020-11-29</time></div>
+                    <a href="/2020/11/29/safety-designs-of-rust/" class="has-link-black-ter is-size-6">Rust的安全性设计</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-29T07:01:09.000Z">2020-11-29</time></div>
+                    <a href="/2020/11/29/learning-rust-7/" class="has-link-black-ter is-size-6">Rust学习笔记7 - 错误处理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-26T08:14:23.000Z">2020-11-26</time></div>
+                    <a href="/2020/11/26/learning-rust-6/" class="has-link-black-ter is-size-6">Rust学习笔记6 - 常用集合类型</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-13T10:23:37.000Z">2020-11-13</time></div>
+                    <a href="/2020/11/13/learning-rust-5/" class="has-link-black-ter is-size-6">Rust学习笔记5 - 模块管理</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+        <article class="media">
+            
+            <div class="media-content">
+                <div class="content">
+                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-11-09T02:22:58.000Z">2020-11-09</time></div>
+                    <a href="/2020/11/09/learning-rust-4/" class="has-link-black-ter is-size-6">Rust学习笔记4 - 枚举与模式匹配</a>
+                    <p class="is-size-7 is-uppercase">
+                        <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
+                    </p>
+                </div>
+            </div>
+        </article>
+        
+    </div>
+</div>
+
+    
+        
+<div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                分类
+            </h3>
+            <ul class="menu-list">
+            <li>
+        <a class="level is-marginless" href="/categories/Algorithm/">
+            <span class="level-start">
+                <span class="level-item">Algorithm</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/JavaScript/">
+            <span class="level-start">
+                <span class="level-item">JavaScript</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">6</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Node-js/">
+            <span class="level-start">
+                <span class="level-item">Node.js</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">2</span>
+            </span>
+        </a></li><li>
+        <a class="level is-marginless" href="/categories/Rust/">
+            <span class="level-start">
+                <span class="level-item">Rust</span>
+            </span>
+            <span class="level-end">
+                <span class="level-item tag">8</span>
+            </span>
+        </a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+        <h3 class="menu-label">
+            归档
+        </h3>
+        <ul class="menu-list">
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/11/">
+                <span class="level-start">
+                    <span class="level-item">十一月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2020/10/">
+                <span class="level-start">
+                    <span class="level-item">十月 2020</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">2</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/06/">
+                <span class="level-start">
+                    <span class="level-item">六月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">4</span>
+                </span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="level is-marginless" href="/archives/2019/05/">
+                <span class="level-start">
+                    <span class="level-item">五月 2019</span>
+                </span>
+                <span class="level-end">
+                    <span class="level-item tag">6</span>
+                </span>
+            </a>
+        </li>
+        
+        </ul>
+        </div>
+    </div>
+</div>
+    
+        <div class="card widget">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                标签
+            </h3>
+            <div class="field is-grouped is-grouped-multiline">
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Algorithm/">
+                        <span class="tag">Algorithm</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Event/">
+                        <span class="tag">Event</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Fibonnaci/">
+                        <span class="tag">Fibonnaci</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/JavaScript/">
+                        <span class="tag">JavaScript</span>
+                        <span class="tag is-grey">6</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Matrix/">
+                        <span class="tag">Matrix</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Node-js/">
+                        <span class="tag">Node.js</span>
+                        <span class="tag is-grey">3</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/OOJS/">
+                        <span class="tag">OOJS</span>
+                        <span class="tag is-grey">2</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Performance/">
+                        <span class="tag">Performance</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Promise/">
+                        <span class="tag">Promise</span>
+                        <span class="tag is-grey">1</span>
+                    </a>
+                </div>
+                
+                <div class="control">
+                    <a class="tags has-addons" href="/tags/Rust/">
+                        <span class="tag">Rust</span>
+                        <span class="tag is-grey">8</span>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+</div>
+
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    <div class="container">
+        <div class="level">
+            <div class="level-start has-text-centered-mobile">
+                <a class="footer-logo is-block has-mb-6" href="/">
+                
+                    <img src="/images/logo.png" alt="Rust学习笔记5 - 模块管理" height="28">
+                
+                </a>
+                <p class="is-size-7">
+                &copy; 2020 Linkeo&nbsp;
+                Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> & <a href="http://github.com/ppoffice/hexo-theme-icarus" target="_blank">Icarus</a>
+                
+                <br>
+                <span id="busuanzi_container_site_uv">
+                共<span id="busuanzi_value_site_uv">0</span>个访客
+                </span>
+                
+                </p>
+            </div>
+            <div class="level-end">
+            
+                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
+                
+                
+                <p class="control">
+                    <a class="button is-white is-large" target="_blank" title="Download Icarus on GitHub" href="http://github.com/ppoffice/hexo-theme-icarus">
+                        
+                        <i class="fas fa-palette"></i>
+                        
+                    </a>
+                </p>
+                
+                </div>
+            
+            </div>
+        </div>
+    </div>
+</footer>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
+<script>moment.locale("zh-CN");</script>
+
+
+    
+    
+    
+    <script src="/js/animation.js"></script>
+    
+
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
+    <script src="/js/gallery.js" defer></script>
+    
+
+    
+    
+
+<div id="outdated">
+    <h6>Your browser is out-of-date!</h6>
+    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/">Update
+            my browser now </a></p>
+    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        outdatedBrowser({
+            bgColor: '#f25648',
+            color: '#ffffff',
+            lowerThan: 'flex'
+        });
+    });
+</script>
+
+
+    
+    
+<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    MathJax.Hub.Config({
+        'HTML-CSS': {
+            matchFontHeight: false
+        },
+        SVG: {
+            matchFontHeight: false
+        },
+        CommonHTML: {
+            matchFontHeight: false
+        },
+        tex2jax: {
+            inlineMath: [
+                ['$','$'],
+                ['\\(','\\)']
+            ]
+        }
+    });
+});
+</script>
+
+    
+    
+
+<a id="back-to-top" title="回到顶端" href="javascript:;">
+    <i class="fas fa-chevron-up"></i>
+</a>
+<script src="/js/back-to-top.js" defer></script>
+
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+    
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
+    <script src="/js/clipboard.js" defer></script>
+    
+
+    
+    
+    
+
+    
+
+
+<script src="/js/main.js" defer></script>
+
+    
+    <div class="searchbox ins-search">
+    <div class="searchbox-container ins-search-container">
+        <div class="searchbox-input-wrapper">
+            <input type="text" class="searchbox-input ins-search-input" placeholder="想要查找什么...">
+            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+        </div>
+        <div class="searchbox-result-wrapper ins-section-wrapper">
+            <div class="ins-section-container"></div>
+        </div>
+    </div>
+</div>
+<script>
+    (function (window) {
+        var INSIGHT_CONFIG = {
+            TRANSLATION: {
+                POSTS: '文章',
+                PAGES: '页面',
+                CATEGORIES: '分类',
+                TAGS: '标签',
+                UNTITLED: '(无标题)',
+            },
+            CONTENT_URL: '/content.json',
+        };
+        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+    })(window);
+</script>
+<script src="/js/insight.js" defer></script>
+<link rel="stylesheet" href="/css/search.css">
+<link rel="stylesheet" href="/css/insight.css">
+    
+</body>
+</html>

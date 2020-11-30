@@ -2,22 +2,23 @@
 <html lang="zh">
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
-<title>标签: OOJS - 星空博客</title>
+<title>Rust的安全性设计 - 星空博客</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 
 
-    <meta name="description" content="A &quot;GitHub Page&quot; blog powered by Hexo">
-<meta name="keywords" content="Developer, Javascript, Server, Web">
-<meta property="og:type" content="website">
-<meta property="og:title" content="星空博客">
-<meta property="og:url" content="https://blog.linkeo.me/tags/OOJS/index.html">
+    <meta name="description" content="Rust 是一门可以帮助我们编写高性能且高可用的程序的语言。Rust 的语言设计中包含了很多关于性能和可靠性的考虑，这次简单介绍一部分关于可靠性（安全性）的设计考虑。">
+<meta name="keywords" content="Rust">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Rust的安全性设计">
+<meta property="og:url" content="https://blog.linkeo.me/2020/11/29/safety-designs-of-rust/index.html">
 <meta property="og:site_name" content="星空博客">
-<meta property="og:description" content="A &quot;GitHub Page&quot; blog powered by Hexo">
+<meta property="og:description" content="Rust 是一门可以帮助我们编写高性能且高可用的程序的语言。Rust 的语言设计中包含了很多关于性能和可靠性的考虑，这次简单介绍一部分关于可靠性（安全性）的设计考虑。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-11-30T06:59:56.396Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="星空博客">
-<meta name="twitter:description" content="A &quot;GitHub Page&quot; blog powered by Hexo">
+<meta name="twitter:title" content="Rust的安全性设计">
+<meta name="twitter:description" content="Rust 是一门可以帮助我们编写高性能且高可用的程序的语言。Rust 的语言设计中包含了很多关于性能和可靠性的考虑，这次简单介绍一部分关于可靠性（安全性）的设计考虑。">
 
 
 
@@ -93,7 +94,7 @@
         <div class="navbar-brand is-flex-center">
             <a class="navbar-item navbar-logo" href="/">
             
-                <img src="/images/logo.png" alt="星空博客" height="28">
+                <img src="/images/logo.png" alt="Rust的安全性设计" height="28">
             
             </a>
         </div>
@@ -123,6 +124,10 @@
                     
                 
                 
+                <a class="navbar-item is-hidden-tablet catalogue" title="目录" href="javascript:;">
+                    <i class="fas fa-list-ul"></i>
+                </a>
+                
                 
                 <a class="navbar-item search" title="搜索" href="javascript:;">
                     <i class="fas fa-search"></i>
@@ -137,57 +142,102 @@
         <div class="container">
             <div class="columns">
                 <div class="column is-8-tablet is-8-desktop is-6-widescreen has-order-2 column-main"><div class="card">
-    <div class="card-content">
-        <nav class="breadcrumb" aria-label="breadcrumbs">
-        <ul>
-            <li><a href="/tags">标签</a></li>
-            <li class="is-active"><a href="#" aria-current="page">OOJS</a></li>
-        </ul>
-        </nav>
-    </div>
-</div>
-
-    <div class="card">
     
     <div class="card-content article ">
         
         <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
             <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-06-12T13:36:07.000Z">2019-06-12</time>
+                <time class="level-item has-text-grey" datetime="2020-11-29T15:46:46.000Z">2020-11-29</time>
                 
                 <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
+                <a class="has-link-grey -link" href="/categories/Rust/">Rust</a>
                 </div>
                 
                 
                 <span class="level-item has-text-grey">
                     
                     
-                    15 分钟 读完 (大约 2304 个字)
+                    10 分钟 读完 (大约 1559 个字)
                 </span>
                 
+                
+                <span class="level-item has-text-grey" id="busuanzi_container_page_pv">
+                    <i class="far fa-eye"></i>
+                    <span id="busuanzi_value_page_pv">0</span>次访问
+                </span>
                 
             </div>
         </div>
         
         <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
             
-                <a class="has-link-black-ter" href="/2019/06/12/js-inheritance/">JavaScript 中的继承与原型链</a>
+                Rust的安全性设计
             
         </h1>
         <div class="content">
-            <p>对于使用过基于类的面向对象语言（如 Java 或 C++）的开发者而言，JavaScript 中的继承可能有些奇怪，因为它是动态的，并且没有类的概念。</p>
-<p>尽管 JavaScript 基于原型的继承模型通常被认为是 JavaScript 弱点，但其实这比经典的基于类的模型要更加强大。</p>
+            <p>Rust 是一门可以帮助我们编写高性能且高可用的程序的语言。Rust 的语言设计中包含了很多关于性能和可靠性的考虑，这次简单介绍一部分关于可靠性（安全性）的设计考虑。</p>
+<a id="more"></a>
+
+<h2 id="Rust-语言"><a href="#Rust-语言" class="headerlink" title="Rust 语言"></a>Rust 语言</h2><p>Rust 是一门强类型的编译型语言，专注于性能和可靠性方面。</p>
+<p>Rust 可以用于开发命令行工具、WEB 服务、DevOps 工具、嵌入式设备、音视频分析与转码、数字货币、生物信息学、搜索引擎、物联网应用、机器学习。Firefox 浏览器大部分组成都是使用 Rust 开发的。</p>
+<p>Rust 提供了一整套开发工具包：包管理工具 Cargo、代码格式化工具、用于 IDE 集成的 RLS（Rust Language Server）。</p>
+<p>Rust 会比其他大多数语言增加更多的约束，通过编译器检查这些约束，来在前期保证一定的可靠性。</p>
+<p>Rust 在语法和类型的设计上，更倾向于时刻提醒开发者关于可靠性的选择。</p>
+<p>Rust 的很多语法的设计都是基于默认更加安全的方式来设计的，比如：变量默认不可变、引用默认不可变、模块内部默认不可见等。</p>
+<h2 id="类型安全"><a href="#类型安全" class="headerlink" title="类型安全"></a>类型安全</h2><p>类型安全是所有强类型语言共有的特性，然而与大部分语言不同，Rust 中没有 <code>null</code>，你必须通过 <code>Option&lt;T&gt;</code> 类型来处理可能空值的情况。</p>
+<figure class="highlight java hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// result可能是一个Result实例或者是null</span></span><br><span class="line">Result result = Example.getResult();</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 如果 result 是 null，这一段会怎么样？</span></span><br><span class="line">System.out.println(<span class="hljs-string">"Got result: "</span> + result.toString());</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment">// get_result() 如果可能产生空的结果，那他必须返回 Option&lt;Result&gt;</span></span><br><span class="line"><span class="hljs-keyword">let</span> result = Example.get_result();</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 直接使用会产生编译错误</span></span><br><span class="line"><span class="hljs-built_in">println!</span>(<span class="hljs-string">"Got result: &#123;&#125;"</span>, result);</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment">// 必须要进一步判断才能使用</span></span><br><span class="line"><span class="hljs-keyword">if</span> <span class="hljs-keyword">let</span> <span class="hljs-literal">Some</span>(result) = result &#123;</span><br><span class="line">  <span class="hljs-built_in">println!</span>(<span class="hljs-string">"Got result: &#123;&#125;"</span>, result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="内存安全"><a href="#内存安全" class="headerlink" title="内存安全"></a>内存安全</h2><p>说到内存管理就得说到垃圾回收，说到垃圾回收，除了开发者自己管理内存，常见的自动回收方式可能就是引用计数、标记擦除等方法，大部分都会产生 Stop-The-World 问题（针对这个问题，有些语言给出了优化的 GC 机制）。</p>
+<ul>
+<li>如果由开发者自己管理内存，那么开发者的水平和开发时的精神状态，将直接与程序的健壮性相关</li>
+<li>如果使用主流的 GC 机制，那么就无法避免 GC 中的多余开销（比如计数、标记，移动内存等）</li>
+</ul>
+<p>内存管理从根本上来说是为了解决内存安全的问题：</p>
+<ul>
+<li>如果内存没有在使用却没有释放，将造成无用的内存占用，长时间运行容易造成内存占用越来越大，最终无法导致性能极度下降或者无法保持程序执行</li>
+<li>如果内存仍然在使用却提前释放，将导致多个数据使用同一片内存，将导致无法预期的错误或者是安全问题</li>
+</ul>
+<p>Rust 通过增加更加严格的约束，从规则上面规避这些内存问题，并且由于这些约束是编译时检查，不会造成运行时多余的开销。</p>
+<p>Rust 增加的规则被称为是所有权（Ownership），其规则为 3 条：</p>
+<ol>
+<li>每个值都有一个所有者，通常是一个变量</li>
+<li>每个值同时都只能有一个所有者</li>
+<li>当所有者的生命周期结束时（变量的作用域结束时），所拥有的值会被释放（内存被回收）</li>
+</ol>
+<figure class="highlight rust hljs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-function"><span class="hljs-keyword">fn</span> <span class="hljs-title">some</span></span>() &#123;</span><br><span class="line">  <span class="hljs-keyword">let</span> s = <span class="hljs-built_in">String</span>::from(<span class="hljs-string">"hello"</span>); <span class="hljs-comment">// 分配了新的堆空间</span></span><br><span class="line">&#125; <span class="hljs-comment">// 变量s将不存在，其所拥有的堆空间将立即被释放</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="引用、数据竞争问题"><a href="#引用、数据竞争问题" class="headerlink" title="引用、数据竞争问题"></a>引用、数据竞争问题</h2><p>通过引用的方式，可以在不影响所有权的情况下，使用其他所有者所持有的值，但是引用同样存在约束，这是为了避免「数据竞争」问题，对引用的约束是：</p>
+<ol>
+<li>在任意的时间点，每个值只能拥有一个可变引用，或者多个不可变引用</li>
+<li>当引用存在时，所有者不能先被释放（即不允许存在「悬挂引用」）</li>
+</ol>
+<p>在引用的问题上，Rust 还提供了生命周期范型来解决更加复杂的引用问题（引用传递时的生命周期问题）。</p>
+<h2 id="线程安全"><a href="#线程安全" class="headerlink" title="线程安全"></a>线程安全</h2><p>当程序存在多个线程时，会存在一些问题：</p>
+<ul>
+<li>竞争条件：多个线程尝试访问同一个数据，其顺序无法预期</li>
+<li>死锁：多个线程等待对方完成执行，导致这些线程无法继续执行</li>
+<li>只会在特定的执行顺序下产生的缺陷，难以稳定地重现和修复</li>
+</ul>
+<p>Rust 中，线程无法使用别的线程中的数据，除非在创建线程时，将数据的所有权移交给这个线程（同时原本的线程将失去所有权）。</p>
+<p>多个线程间可以通过消息通道来传递数据，或者通过信号量来协同多个线程的执行。</p>
+<p>还有其他的方式来允许更加复杂的线程数据访问。</p>
+<h2 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h2><p>Rust 语言中的错误被分为了两类：不可恢复错误（panic）与可恢复错误（用 <code>Result</code> 来表示结果）。</p>
+<p>其中，不可恢复错误是指程序陷入了非预期的状态，通常出现在以非预期的参数来调用函数时。</p>
+<p>而可恢复错误是指程序可以预见的问题，以 <code>Result</code> 来表示可能失败的结果，提示开发者需要处理错误情况。</p>
+
         </div>
         
-        
-        <div class="level is-mobile">
+        <div class="level is-size-7 is-uppercase">
             <div class="level-start">
                 <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2019/06/12/js-inheritance/#more">阅读更多</a>
+                    <span class="is-size-6 has-text-grey has-mr-7">#</span>
+                    <a class="has-link-grey -link" href="/tags/Rust/">Rust</a>
                 </div>
             </div>
         </div>
+        
         
         
     </div>
@@ -197,59 +247,19 @@
 
 
 
-
-
-
-    <div class="card">
-    
-    <div class="card-content article ">
+<div class="card card-transparent">
+    <div class="level post-navigation is-flex-wrap is-mobile">
         
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-05-22T09:20:32.000Z">2019-05-22</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/JavaScript/">JavaScript</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    7 分钟 读完 (大约 1085 个字)
-                </span>
-                
-                
-            </div>
+        
+        <div class="level-end">
+            <a class="level level-item has-link-grey  article-nav-next" href="/2020/11/29/learning-rust-7/">
+                <span class="level-item">Rust学习笔记7 - 错误处理</span>
+                <i class="level-item fas fa-chevron-right"></i>
+            </a>
         </div>
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                <a class="has-link-black-ter" href="/2019/05/22/js-new-operator/">JavaScript 的 new 操作符</a>
-            
-        </h1>
-        <div class="content">
-            <p>JavaScript 的 <code>new</code> 操作符都做了些什么？如何用一个函数来模拟 <code>new</code> 呢？</p>
-        </div>
-        
-        
-        <div class="level is-mobile">
-            <div class="level-start">
-                <div class="level-item">
-                <a class="button is-size-7 is-light" href="/2019/05/22/js-new-operator/#more">阅读更多</a>
-                </div>
-            </div>
-        </div>
-        
         
     </div>
 </div>
-
-
-
-
-
-
 
 
 </div>
@@ -342,6 +352,41 @@
 </div>
     
         
+<div class="card widget" id="toc">
+    <div class="card-content">
+        <div class="menu">
+            <h3 class="menu-label">
+                目录
+            </h3>
+            <ul class="menu-list"><li>
+        <a class="is-flex" href="#Rust-语言">
+        <span class="has-mr-6">1</span>
+        <span>Rust 语言</span>
+        </a></li><li>
+        <a class="is-flex" href="#类型安全">
+        <span class="has-mr-6">2</span>
+        <span>类型安全</span>
+        </a></li><li>
+        <a class="is-flex" href="#内存安全">
+        <span class="has-mr-6">3</span>
+        <span>内存安全</span>
+        </a></li><li>
+        <a class="is-flex" href="#引用、数据竞争问题">
+        <span class="has-mr-6">4</span>
+        <span>引用、数据竞争问题</span>
+        </a></li><li>
+        <a class="is-flex" href="#线程安全">
+        <span class="has-mr-6">5</span>
+        <span>线程安全</span>
+        </a></li><li>
+        <a class="is-flex" href="#错误处理">
+        <span class="has-mr-6">6</span>
+        <span>错误处理</span>
+        </a></li></ul>
+        </div>
+    </div>
+</div>
+
     
         
 
@@ -954,7 +999,7 @@
             <div class="level-start has-text-centered-mobile">
                 <a class="footer-logo is-block has-mb-6" href="/">
                 
-                    <img src="/images/logo.png" alt="星空博客" height="28">
+                    <img src="/images/logo.png" alt="Rust的安全性设计" height="28">
                 
                 </a>
                 <p class="is-size-7">
